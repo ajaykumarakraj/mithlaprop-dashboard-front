@@ -1,13 +1,14 @@
 // src/components/PostProperty.js
 import React, { useState } from "react";
-import PostSidebar from "../component/PostSidebar";
+
 import Navbar from "../component/Navbar";
 import VideoUploader from "../component/VideoUploader";
 import VideoUpload from "../component/VideoUploader";
 import ImageUpload from "../component/ImageUpload";
+import EditSidebar from "../component/EditSidebar";
 // import "../assets/css/PostProperty.css";
 
-const PostProperty = () => {
+const PostPropertyEdit = () => {
     const [step, setStep] = useState(0);
     const [selectedType, setSelectedType] = useState("Villa");
     const [cityName, setCityName] = useState("");
@@ -249,15 +250,15 @@ const PostProperty = () => {
         console.log("Form Data:", data);
         alert("Form Submitted!");
     };
-    console.log(bhk)
+
     return (
         <div className="main-layout">
 
             <div className="content-area">
                 <Navbar />
                 <div className="post-property-container">
+                    <EditSidebar step={step} onStepChange={setStep} />
 
-                    <PostSidebar step={step} onStepChange={setStep} />
                     <div className="property-form">
 
 
@@ -815,4 +816,4 @@ const PostProperty = () => {
     );
 };
 
-export default PostProperty;
+export default PostPropertyEdit;

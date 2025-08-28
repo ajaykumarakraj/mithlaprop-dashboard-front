@@ -1,42 +1,37 @@
-// src/components/Sidebar.js
 import React from "react";
-// import "../assets/css/Sidebar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faHome,
-    faMapMarkerAlt,
-    faBed,
-    faImage,
-    faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { FaHome, FaList, FaUser, FaCog } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const steps = [
-    { label: "Basic Details", icon: faHome },
-    { label: "Location  Details", icon: faMapMarkerAlt },
-    { label: "Properety Profile", icon: faBed },
-    { label: "Photos and Videos", icon: faImage },
-    { label: "Amenities Section", icon: faCheckCircle },
-];
 
-const Sidebar = ({ step }) => {
+const Sidebar = () => {
     return (
-        <div className="sidebar">
-            <h2 className="sidebar-title">Post Property</h2>
-            <div className="sidebar-progress">
-                {steps.map((s, index) => (
-                    <div key={index} className="progress-step-vertical">
-                        <div className="flexadd">
-                            <div className={`circle-icon ${index <= step ? "active" : ""}`}>
-                                <FontAwesomeIcon icon={s.icon} />
-                            </div>
-                            <div className="textadd"> <span className="label">{s.label}</span></div>
-                        </div>
-                        {index < steps.length - 1 && (
-                            <div className={`vertical-line ${index < step ? "filled" : ""}`}></div>
-                        )}
-                    </div>
-                ))}
-            </div>
+        <div className="sidebar d-flex flex-column p-3 bg-dark text-white">
+            {/* Logo */}
+            <h2 className="fs-4 text-center mb-5">🏠 PropDash</h2>
+
+            {/* Navigation */}
+            <ul className="nav nav-pills flex-column mb-auto">
+                <li className="nav-item">
+                    <Link to="/" className="nav-link text-white sidebar-link">
+                        <FaHome className="me-2" /> Home
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/listings" className="nav-link text-white sidebar-link">
+                        <FaList className="me-2" /> Listings
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/users" className="nav-link text-white sidebar-link">
+                        <FaUser className="me-2" /> Users
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/settings" className="nav-link text-white sidebar-link">
+                        <FaCog className="me-2" /> Settings
+                    </Link>
+                </li>
+            </ul>
         </div>
     );
 };
