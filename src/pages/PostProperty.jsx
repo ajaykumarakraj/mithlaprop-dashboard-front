@@ -266,6 +266,24 @@ const PostProperty = () => {
                                 <div >
 
                                     <h2>Add Property Details</h2>
+                                    {/* Contact Number */}
+                                    <label>Your contact number:</label>
+                                    <input
+                                        type="tel"
+                                        placeholder="Phone Number"
+                                        maxLength="10"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                    />
+
+                                    {/* City */}
+                                    <label>Property city:</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Please enter city name"
+                                        value={city}
+                                        onChange={(e) => setCity(e.target.value)}
+                                    />
                                     {/* Owner / Agent */}
                                     <label>You are:</label>
                                     <div className="btn-group user-type">
@@ -334,24 +352,7 @@ const PostProperty = () => {
                                         ))}
                                     </div>
 
-                                    {/* Contact Number */}
-                                    <label>Your contact number:</label>
-                                    <input
-                                        type="tel"
-                                        placeholder="Phone Number"
-                                        maxLength="10"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                    />
 
-                                    {/* City */}
-                                    <label>Property city:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Please enter city name"
-                                        value={city}
-                                        onChange={(e) => setCity(e.target.value)}
-                                    />
 
                                     {/* Continue Button */}
                                     {/* <button className="continue-btn" onClick={handleContinue}>Continue</button> */}
@@ -363,44 +364,15 @@ const PostProperty = () => {
                             </>
                         )}
 
-                        {step === 1 && (
+                        {/* {step === 1 && (
                             <>
                                 <h2>Add Location Details</h2>
-                                <label>City</label>
-                                <input
-                                    type="text"
-                                    value={cityName}
-                                    placeholder="Enter City Name"
-                                    onChange={(e) => setCityName(e.target.value)}
-                                />
-                                <label>Locality </label>
-                                {!locality && <span className="error-text"> (Locality is required.)</span>}
-                                <input
-                                    type="text"
-                                    value={locality}
-                                    placeholder="Enter locality"
-                                    onChange={(e) => setLocality(e.target.value)}
-                                />
 
-                                <label>Sub Locality (optional)</label>
-                                <input
-                                    type="text"
-                                    value={subLocality}
-                                    placeholder="Enter Sub Locality "
-                                    onChange={(e) => setSubLocality(e.target.value)}
-                                />
-                                <label>Apartment/Society</label>
-                                <input
-                                    type="text"
-                                    value={apartment}
-                                    placeholder="Enter Apartment/Society "
-                                    onChange={(e) => setApartment(e.target.value)}
-                                />
 
                             </>
-                        )}
+                        )} */}
 
-                        {step === 2 && (
+                        {step === 1 && (
                             <>
                                 <h2>Tell Us About Your Property</h2>
                                 <h4>Your Apartment is a</h4>
@@ -579,6 +551,64 @@ const PostProperty = () => {
                                             ))}
                                         </div>
 
+                                        <h4 className="mt-3">Other Room</h4>
+
+                                        <div className="btn-group sub-options">
+                                            {Otherroom.map((option) => (
+                                                <button
+                                                    key={option}
+                                                    className={otherroom.includes(option) ? "active" : ""}
+                                                    onClick={() => toggleOption(option)}
+                                                    type="button"
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <h4 className="mt-3">Furnishing</h4>
+                                        <div className="btn-group sub-options">
+
+                                            {Furnishing.map((option) => (
+                                                <button
+                                                    key={option}
+                                                    className={` ${furnishing === option ? "active" : ""}`}
+                                                    onClick={() => setFurnishing(option)}
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <label>City</label>
+                                        <input
+                                            type="text"
+                                            value={cityName}
+                                            placeholder="Enter City Name"
+                                            onChange={(e) => setCityName(e.target.value)}
+                                        />
+                                        <label>Locality </label>
+                                        {!locality && <span className="error-text"> (Locality is required.)</span>}
+                                        <input
+                                            type="text"
+                                            value={locality}
+                                            placeholder="Enter locality"
+                                            onChange={(e) => setLocality(e.target.value)}
+                                        />
+
+                                        <label>Sub Locality (optional)</label>
+                                        <input
+                                            type="text"
+                                            value={subLocality}
+                                            placeholder="Enter Sub Locality "
+                                            onChange={(e) => setSubLocality(e.target.value)}
+                                        />
+                                        <label>Apartment/Society</label>
+                                        <input
+                                            type="text"
+                                            value={apartment}
+                                            placeholder="Enter Apartment/Society "
+                                            onChange={(e) => setApartment(e.target.value)}
+                                        />
                                         <div className="checkbox-group">
                                             <label className="checkbox-item">
                                                 <input type="checkbox" />
@@ -601,44 +631,9 @@ const PostProperty = () => {
                             </>
                         )}
 
-                        {step === 3 && (
-                            <>
-                                <h2>Add One Video of Property</h2>
-                                <VideoUpload />
-                                <ImageUpload />
-                            </>
-                        )}
-                        {step === 4 && (
+                        {step === 2 && (
                             <>
                                 <h2>Add amenities/unique features</h2>
-                                <h4 className="mt-3">Other Room</h4>
-
-                                <div className="btn-group sub-options">
-                                    {Otherroom.map((option) => (
-                                        <button
-                                            key={option}
-                                            className={otherroom.includes(option) ? "active" : ""}
-                                            onClick={() => toggleOption(option)}
-                                            type="button"
-                                        >
-                                            {option}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <h4 className="mt-3">Furnishing</h4>
-                                <div className="btn-group sub-options">
-
-                                    {Furnishing.map((option) => (
-                                        <button
-                                            key={option}
-                                            className={` ${furnishing === option ? "active" : ""}`}
-                                            onClick={() => setFurnishing(option)}
-                                        >
-                                            {option}
-                                        </button>
-                                    ))}
-                                </div>
                                 <h4 className="mt-3">Amenities</h4>
                                 <div className="btn-group sub-options">
                                     {Amenities.map((option) => (
@@ -799,10 +794,19 @@ const PostProperty = () => {
                                 </div>
 
                             </>
+
+
+                        )}
+                        {step === 3 && (
+                            <>
+                                <h2>Add One Video of Property</h2>
+                                <VideoUpload />
+                                <ImageUpload />
+                            </>
                         )}
                         <div className="buttons">
                             {step > 0 && <button className="continue-btn" onClick={handleBack}>Back</button>}
-                            {step < 4 ? (
+                            {step < 3 ? (
                                 <button className="continue-btn" onClick={handleNext}>Next</button>
                             ) : (
                                 <button className="continue-btn" onClick={handleSubmit}>Submit</button>

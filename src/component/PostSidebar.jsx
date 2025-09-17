@@ -11,10 +11,11 @@ import {
 
 const steps = [
     { label: "Basic Details", icon: faHome },
-    { label: "Location  Details", icon: faMapMarkerAlt },
+    // { label: "Location  Details", icon: faMapMarkerAlt },
     { label: "Properety Profile", icon: faBed },
-    { label: "Photos and Videos", icon: faImage },
     { label: "Amenities Section", icon: faCheckCircle },
+    { label: "Photos and Videos", icon: faImage },
+
 ];
 
 const PostSidebar = ({ step }) => {
