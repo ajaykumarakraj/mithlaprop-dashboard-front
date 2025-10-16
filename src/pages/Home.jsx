@@ -1,27 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
 import "../assets/css/listing.css";
+import { useDispatch, useSelector } from "react-redux";
+import { signupUser, verifyOtp, closeOtpPopup, resetRedirect } from "../Redux/slices/authSlice";
 
 const Home = () => {
     const navigate = useNavigate();
-    const [userType, setUserType] = useState("owner");
-    const [phone, setPhone] = useState("");
-    const [city, setCity] = useState("");
+    const dispatch = useDispatch();
 
+    const [userType, setUserType] = useState("owner");
+    const [mobile, setPhone] = useState("");
+    const [name, setName] = useState("");
+    const [otp, setOtp] = useState("");
+
+    const { otpPopup, loading, error, message, redirect } = useSelector((state) => state.auth);
+    console.log(message)
+    // ✅ Redirect after OTP success
+    useEffect(() => {
+        if (redirect) {
+            navigate("/postproperty", { state: { userType, mobile, name } });
+            dispatch(resetRedirect());
+        }
+    }, [redirect, navigate, dispatch, userType, mobile, name]);
+
+    // 🔹 Send OTP
     const handleContinue = () => {
-        if (!phone || !city) {
-            alert("Please complete all required fields.");
+        if (!mobile || mobile.length !== 10) {
+            alert("Please enter a valid 10-digit phone number.");
             return;
         }
+        dispatch(signupUser({ mobile }));
+    };
 
-        navigate("/postproperty", {
-            state: {
-                userType,
-                phone,
-                city,
-            },
-        });
+    // 🔹 Verify OTP
+    const handleOtpVerify = () => {
+        if (!otp || otp.length !== 4) {
+            alert("Please enter a valid 4-digit OTP.");
+            return;
+        }
+        dispatch(verifyOtp({ mobile, otp }));
     };
 
     return (
@@ -33,44 +51,19 @@ const Home = () => {
                 </Link>
                 <h2>Sell or Rent Your Property Faster</h2>
                 <h1>100% Free Listing on India’s #1 Real Estate Platform</h1>
-
-                <div className="badges">
-                    <span>8M+ Monthly Users</span>
-                    <span>10 Years of Trust</span>
-                </div>
-
-                <div className="stats">
-                    <div className="stat-box green">
-                        <ul className="stat-list">
-                            <li>Property Sold in Every 30 Minutes</li>
-                            <li>Get Unlimited Query</li>
-                            <li>Advertise for Free</li>
-                        </ul>
-                    </div>
-
-                    {/* <div className="stat-box blue">
-                        <h3>Property Rented in Every 10 Minutes</h3>
-                    </div> */}
-                </div>
             </div>
 
-            {/* Right Section (Form) */}
+            {/* Right Section */}
             <div className="listing-right">
                 <h2>Let’s get you started</h2>
 
                 {/* User Type */}
                 <label>You are:</label>
                 <div className="btn-group user-type">
-                    <button
-                        className={userType === "owner" ? "active" : ""}
-                        onClick={() => setUserType("owner")}
-                    >
+                    <button className={userType === "owner" ? "active" : ""} onClick={() => setUserType("owner")}>
                         Owner
                     </button>
-                    <button
-                        className={userType === "agent" ? "active" : ""}
-                        onClick={() => setUserType("agent")}
-                    >
+                    <button className={userType === "agent" ? "active" : ""} onClick={() => setUserType("agent")}>
                         Agent
                     </button>
                 </div>
@@ -81,7 +74,7 @@ const Home = () => {
                     type="tel"
                     placeholder="Phone Number"
                     maxLength="10"
-                    value={phone}
+                    value={mobile}
                     onChange={(e) => setPhone(e.target.value)}
                 />
 
@@ -89,17 +82,42 @@ const Home = () => {
                 <label>Property city:</label>
                 <input
                     type="text"
-                    placeholder="Please enter city name"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Please Enter Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
 
-                <button className="continue-btn" onClick={handleContinue}>Continue</button>
+                <button className="continue-btn" onClick={handleContinue} disabled={loading}>
+                    {loading ? "Please wait..." : "Continue"}
+                </button>
 
-                <p className="help-text">
-                    Need help in listing property? <a href="#">Click Here</a>
-                </p>
+                {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
+                {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
             </div>
+
+            {/* OTP Popup */}
+            {otpPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-box">
+                        <h3>Verify OTP</h3>
+                        <input
+                            type="text"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="Enter OTP"
+                            maxLength="4"
+                        />
+                        <div className="popup-actions">
+                            <button onClick={handleOtpVerify} disabled={loading}>
+                                {loading ? "Verifying..." : "Verify"}
+                            </button>
+                            <button onClick={() => dispatch(closeOtpPopup())}>Cancel</button>
+                        </div>
+                        {message && <p style={{ color: "green" }}>{message}</p>}
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
