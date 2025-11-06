@@ -73,7 +73,7 @@ export const fetchPropertyTypes = createAsyncThunk(
                 }
             );
 
-            console.log("get-property-type API response:", res.data);
+            // console.log("get-property-type API response:", res.data);
 
             if (res.data.status === 200) {
                 return res.data.data; // assuming property types are inside `data`
@@ -111,6 +111,7 @@ const authSlice = createSlice({
     }
     ,
     reducers: {
+
         closeOtpPopup: (state) => {
             state.otpPopup = false;
             state.error = null;

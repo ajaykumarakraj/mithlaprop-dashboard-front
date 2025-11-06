@@ -1,0 +1,198 @@
+// src/components/PostProperty.js
+import React, { useEffect, useState } from "react";
+import PostSidebar from "../component/PostSidebar";
+import Navbar from "../component/Navbar";
+import { useLocation } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+// import "../assets/css/PostProperty.css";
+
+const PostProperty = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch()
+
+    const { types, loading, error } = useSelector(state => state.auth.propertyType)
+    const [getSubTypeOptions, setGetSubTypeOptions] = useState([])
+    const [step, setStep] = useState(0);
+    const [userType, setUserType] = useState("owner");
+    const [action, setAction] = useState("sale");
+    const [propertyid, setPropertyid] = useState("Residential");
+    const [propertyType, setPropertyType] = useState("")
+    const [subType, setSubType] = useState("");
+    const [phone, setPhone] = useState("");
+
+
+    const handleNext = () => {
+        const basicdata = {
+            phone,
+            userType,
+            action,
+            propertyType,
+            subType,
+            propertyid
+        };
+
+        localStorage.setItem("basicDetails", JSON.stringify(basicdata));
+        if (propertyType == "Residential" && subType == "Plot / Land") {
+            navigate(`/Residential-Plot`);
+        } else if (propertyType == "Residential") {
+            navigate(`/Residential-Property`);
+        } else {
+            alert("select property type")
+        }
+    };
+
+    // Api  start
+    useEffect(() => {
+        const basic = JSON.parse(localStorage.getItem("basicDetails"));
+        console.log(basic)
+        setPhone(basic.phone || "")
+        setUserType(basic.userType)
+        setAction(basic.action)
+        setPropertyid(basic.propertyid)
+        setSubType(basic.subType)
+        dispatch(fetchPropertyTypes())
+    }, [dispatch])
+    // get api Property Type:
+    // if (loading) return <div>Loading property types...</div>;
+    // if (error) return <div>Error: {error.toString()}</div>;
+    // console.log("get data", types)
+
+
+    const handlePropertyType = async (id, name) => {
+        console.log("get id", id, name)
+        setPropertyType(name)
+        // const id = e.target.value
+        setPropertyid(id)
+
+        try {
+            const res = await axios.get(`https://api.squarebigha.com/api/subtype-list-by-propertyid/${id}`, {
+
+                headers: {
+                    Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g` // ⬅️ shortened for display
+                },
+            })
+            if (res.data.status) {
+                console.log("response", res.data.data)
+                setGetSubTypeOptions(res.data.data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+        <div className="main-layout">
+
+            <div className="content-area">
+                <div>
+                    <Navbar />
+                </div>
+                <div className="post-property-container">
+
+                    <PostSidebar step={step} onStepChange={setStep} />
+                    <div className="property-form">
+                        <>
+                            <div >
+
+                                <h2>Add Property Details</h2>
+                                {/* Contact Number */}
+                                <label>Your contact number:</label>
+                                <input
+                                    type="tel"
+                                    placeholder="Phone Number"
+                                    maxLength="10"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                                <label>You are:</label>
+                                <div className="btn-group user-type">
+                                    <button className={userType === "owner" ? "active" : ""} onClick={() => setUserType("owner")}>
+                                        Owner
+                                    </button>
+                                    <button className={userType === "agent" ? "active" : ""} onClick={() => setUserType("agent")}>
+                                        Agent
+                                    </button>
+                                </div>
+
+                                {/* Sale / Rent / PG */}
+                                <label>You are here to:</label>
+                                <div className="btn-group sub-options">
+                                    <button className={action === "Sale" ? "active" : ""} onClick={() => setAction("Sale")}>
+                                        Sale
+                                    </button>
+                                    <button className={action === "rent" ? "active" : ""} onClick={() => setAction("rent")}>
+                                        Rent
+                                    </button>
+
+                                    <button className={action === "Lease" ? "active" : ""} onClick={() => setAction("Lease")}>
+                                        Lease
+                                    </button>
+
+                                </div>
+
+                                {/* Property Type */}
+                                <label>Property Type:</label>
+                                <div className="btn-group property-type">
+                                    {types
+                                        .filter((v) => v.status === "1")
+                                        .map((v, k) => (
+                                            <button
+                                                key={k}
+                                                value={v.id}
+                                                className={v.id == propertyid ? "active" : ""}
+                                                onClick={() => handlePropertyType(v.id, v.type_name)}
+                                            >
+                                                {v.type_name}
+                                            </button>
+                                        ))}
+
+                                </div>
+
+                                {/* Sub-Type Label and Options */}
+
+                                <div className="btn-group sub-options">
+                                    {getSubTypeOptions.map((v, k) => (
+                                        <button
+                                            key={k}
+                                            value={v.subtype_name}
+                                            className={v.subtype_name === subType ? "active" : ""}
+                                            onClick={() => {
+                                                setSubType(v.subtype_name);
+                                                // Redirect to form page after selecting both
+
+                                            }}
+                                        >
+                                            {v.subtype_name}
+                                        </button>
+                                    ))}
+                                </div>
+
+
+
+                                <p className="help-text">
+                                    Need help in listing property? <a href="#">Click Here</a>
+                                </p>
+                            </div>
+                        </>
+
+
+                        <div className="buttons">
+
+
+                            <button className="continue-btn" onClick={handleNext}>Next</button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div >
+    );
+};
+
+export default PostProperty;

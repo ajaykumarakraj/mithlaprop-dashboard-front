@@ -5,7 +5,7 @@ import "../assets/css/listing.css";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser, verifyOtp, closeOtpPopup, resetRedirect } from "../Redux/slices/authSlice";
 
-const Home = () => {
+const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -122,4 +122,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Login;
