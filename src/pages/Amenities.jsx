@@ -22,7 +22,7 @@ const Amenities = () => {
     const dispatch = useDispatch()
 
     const [GetAmenities, setGetAmenities] = useState("")
-    const [amenities, setAmenities] = useState("");
+    const [amenities, setAmenities] = useState([]);
     const [step, setStep] = useState(2);
     const steps = [
         { label: "Basic Details", icon: faHome },
@@ -31,24 +31,35 @@ const Amenities = () => {
         { label: "Amenities Section", icon: faCheckCircle },
         { label: "Photos and Videos", icon: faImage },
     ];
+
+
     const AmenitiesOption = (option) => {
-        if (amenities.includes(option)) {
-            setAmenities(amenities.filter((item) => item !== option))
+        const current = Array.isArray(amenities) ? amenities : [];
+
+        // Check if selected already
+        const exists = current.find((item) => item.id === option.id);
+
+        if (exists) {
+            setAmenities(current.filter((item) => item.id !== option.id));
         } else {
-            setAmenities([...amenities, option])
+            setAmenities([...current, { id: option.id, name: option.name }]);
         }
-    }
+    };
+    ;
 
     const data = JSON.parse(localStorage.getItem("userData"));
-    console.log(amenities, "url");
+    console.log(data, "url");
 
 
 
 
 
     const handleNext = () => {
+        const amenitiesdata = {
+            amenities
+        }
+        localStorage.setItem("amenitiesdata", JSON.stringify(amenitiesdata));
 
-        localStorage.setItem("amenities", JSON.stringify(amenities));
         navigate("/image-upload");
     };
 
@@ -56,8 +67,12 @@ const Amenities = () => {
 
     // Api  start
     useEffect(() => {
-        const amenityData = JSON.parse(localStorage.getItem("amenities"));
-        console.log(amenityData)
+        // localStorage.removeItem("amenitiesdata");
+
+        const amenityData = JSON.parse(localStorage.getItem("amenitiesdata"));
+        setAmenities(amenityData?.amenities || []);
+        console.log(amenityData, "hrghfdghk")
+
         getamenities()
         dispatch(fetchPropertyTypes())
     }, [dispatch])
@@ -95,7 +110,7 @@ const Amenities = () => {
 
 
 
-    // console.log(GetAmenities)
+    console.log(GetAmenities)
 
     return (
         <div className="main-layout">
@@ -131,18 +146,19 @@ const Amenities = () => {
                             <h2>Add amenities/unique features</h2>
                             <h4 className="mt-3">Amenities</h4>
                             <div className="btn-group sub-options">
-                                {(Array.isArray(GetAmenities) ? GetAmenities : [])
-                                    .filter(opt => opt.status === "1")
-                                    .map((option) => (
-                                        <button
-                                            key={option.id}
-                                            className={amenities.includes(option.id) ? "active" : ""}
-                                            onClick={() => AmenitiesOption(option.id)}
-                                            type="button"
-                                        >
-                                            {option.name}
-                                        </button>
-                                    ))}
+                                {Array.isArray(GetAmenities) && GetAmenities.filter((v) => v.status === "1").map((option) => (
+                                    <button
+                                        key={option.id}
+
+                                        className={amenities.some((item) => item.id === option.id) ? "active" : ""}
+
+                                        onClick={() => AmenitiesOption(option)}
+                                        type="button"
+                                    >
+                                        {option.name}
+                                    </button>
+                                ))}
+
 
                             </div>
 

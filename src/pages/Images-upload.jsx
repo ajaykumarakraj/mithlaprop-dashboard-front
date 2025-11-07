@@ -71,20 +71,24 @@ const Imageupload = () => {
 
 
     const handleSubmit = async () => {
+        const basic = JSON.parse(localStorage.getItem("basicDetails") || "{}");
+        const profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
+        const amenityData = JSON.parse(localStorage.getItem("amenitiesdata") || "{}");
 
-        const basic = JSON.parse(localStorage.getItem("basicDetails"));
-        const profile = JSON.parse(localStorage.getItem("propertyProfile"));
-        const amenityData = JSON.parse(localStorage.getItem("amenities"));
-       
+        console.log(amenityData)
+        const ids = Array.isArray(amenityData?.amenities)
+            ? amenityData.amenities.map(item => item.id)
+            : [];
+        console.log(ids, "id find");
+
         const formData = new FormData();
-
         // ✅ Append Text Data According To Given Keys
         formData.append("user_id", "1");
         formData.append("phone", basic.phone);
         formData.append("agent_city", "");
         formData.append("user_type", basic.userType);
         formData.append("listing_type", basic.action);  //
-        formData.append("property_type", basic.propertyType);
+        formData.append("property_type", basic.propertyTypeurl);
         formData.append("property_sub_type", basic.subType);
         formData.append("price", profile.price);
         formData.append("price_unit", profile.AreaUnit);
@@ -102,7 +106,7 @@ const Imageupload = () => {
         formData.append("locality", profile.locality);
         formData.append("apartment_society", profile.apartment);
 
-        formData.append("aminities_id", amenityData);//JSON.stringify(amenityData)
+        formData.append("aminities_id", ids);//JSON.stringify(amenityData)
 
         // ✅ Append Images (Important: actual File objects)
         files.forEach((file) => {
@@ -113,7 +117,7 @@ const Imageupload = () => {
         }
 
         try {
-           
+
             const response = await axios.post(
                 "https://api.squarebigha.com/api/post-property",
 
@@ -130,6 +134,13 @@ const Imageupload = () => {
             if (response.data.status == 200) {
                 console.log("Success:", response.data);
                 alert("✅ Property Posted Successfully!");
+
+                localStorage.removeItem("amenitiesdata");
+                localStorage.removeItem("basicDetails");
+                localStorage.removeItem("propertyProfile");
+                // localStorage.removeItem("userData");
+                localStorage.removeItem("subTypeData");
+
             }
 
 

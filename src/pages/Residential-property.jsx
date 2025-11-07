@@ -22,7 +22,7 @@ const Residentialproperty = () => {
     const dispatch = useDispatch()
     const location = useLocation();
     const navigate = useNavigate();
-    const { types, loading, error } = useSelector(state => state.auth.propertyType)
+    // const { types, loading, error } = useSelector(state => state.auth.propertyType)
     const [step, setStep] = useState(1);
 
     const [cityName, setCityName] = useState("");
@@ -35,13 +35,13 @@ const Residentialproperty = () => {
     const [balconies, setBalconies] = useState("1");
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
-    const [AreaUnit, setAreaUnit] = useState("sq.ft.")
+    const [AreaUnit, setAreaUnit] = useState("sq.ft.");
     const [unit, setUnit] = useState("1");
 
     const [ownership, setOwnership] = useState("");
     const [propertyage, setPropertyAge] = useState("");
 
-    const [otherroom, setOtherroom] = useState("");
+    const [otherroom, setOtherroom] = useState([]);
 
     const [constraction, setConstraction] = useState("");
 
@@ -61,7 +61,6 @@ const Residentialproperty = () => {
             setOtherroom([...otherroom, option]);
         }
     };
-
 
     const PropertyAge = ["0 to 1 years", "1 to 5 years", "5 to 10 years", "10 years +"]
     const Ownership = ["Freehold", "Leasehold", "Co-operative society", "Power of Attorney"]
@@ -91,43 +90,32 @@ const Residentialproperty = () => {
             constraction,
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
-        localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
+        localStorage.setItem("userData ", JSON.stringify({ url: location.pathname }));
         navigate("/amenities");
-
     }
     // Api  start
     useEffect(() => {
-        const Profile = JSON.parse(localStorage.getItem("propertyProfile"));
-        console.log(Profile)
-        setBhk(Profile.bhk)
-        setBhkroom(Profile.bhkroom)
-        setBathRooms(Profile.bathroom)
-        setBalconies(Profile.balconies)
-        setArea(Profile.area)
-        setAreaUnit(Profile.AreaUnit)
-        setPrice(Profile.price)
-        setConstraction(Profile.constraction)
-        setOwnership(Profile.ownership)
-        setOtherroom(Profile.otherroom)
-        setFurnishing(Profile.furnishing)
-        setCityName(Profile.cityName)
-        setLocality(Profile.locality)
-        setSubLocality(Profile.subLocality)
-        setApartment(Profile.apartment)
-        dispatch(fetchPropertyTypes())
-    }, [dispatch])
-    // get api Property Type:
+        const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
+        setBhk(Profile.bhk || "");
+        setBhkroom(Profile.bhkroom || "1");
+        setBathRooms(Profile.bathroom || "1");
+        setBalconies(Profile.balconies || "1");
+        setArea(Profile.area || "");
+        setAreaUnit(Profile.AreaUnit || "");
+        setPrice(Profile.price || "");
+        setConstraction(Profile.constraction || "");
+        setOwnership(Profile.ownership || "");
+        setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
+        setFurnishing(Profile.furnishing || "");
+        setCityName(Profile.cityName || "");
+        setLocality(Profile.locality || "");
+        setSubLocality(Profile.subLocality || "");
+        setApartment(Profile.apartment || "");
 
+        dispatch(fetchPropertyTypes());
+    }, [dispatch]);
 
-    // if (loading) return <div>Loading property types...</div>;
-    // if (error) return <div>Error: {error.toString()}</div>;
-    // console.log("get data", types)
-
-
-
-    // console.log(location.pathname);
-    // console.log(AreaUnit, "AreaUnit")
-    // console.log(constraction, "constraction")
+ // get api Property Type:
     return (
         <div className="main-layout">
 
@@ -156,8 +144,6 @@ const Residentialproperty = () => {
                         </div>
                     </div>
                     <div className="property-form">
-
-
                         <>
                             <h2>Tell Us About Your Property</h2>
                             <h4>Your Apartment is a</h4>
@@ -172,9 +158,7 @@ const Residentialproperty = () => {
                                     </button>
                                 ))}
                             </div>
-
-
-                            <h4 className="mt-3">Add Room Details</h4>
+                           <h4 className="mt-3">Add Room Details</h4>
                             <label>No. of BedRooms</label>
                             <div className="btn-group sub-options">
                                 {bhkroomno.map((option) => (
@@ -232,7 +216,6 @@ const Residentialproperty = () => {
                                                 value={AreaUnit}
                                                 onChange={(e) => setAreaUnit(e.target.value)}
                                             >
-
                                                 <option value="sq.ft.">sq.ft.</option>
                                                 <option value="sq.yards">sq.yards</option>
                                                 <option value="sq.m.">sq.m.</option>

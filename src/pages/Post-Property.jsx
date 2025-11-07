@@ -21,7 +21,7 @@ const PostProperty = () => {
     const [userType, setUserType] = useState("owner");
     const [action, setAction] = useState("sale");
     const [propertyid, setPropertyid] = useState("Residential");
-    const [propertyType, setPropertyType] = useState("")
+    const [propertyTypeurl, setPropertyTypeurl] = useState("")
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
 
@@ -31,28 +31,43 @@ const PostProperty = () => {
             phone,
             userType,
             action,
-            propertyType,
             subType,
-            propertyid
+            propertyid,
+            propertyTypeurl
         };
 
         localStorage.setItem("basicDetails", JSON.stringify(basicdata));
-        if (propertyType == "Residential" && subType == "Plot / Land") {
+        localStorage.setItem("subTypeData", JSON.stringify(getSubTypeOptions));
+
+
+
+
+        if (propertyTypeurl == "Residential" && subType == "Plot / Land") {
             navigate(`/Residential-Plot`);
-        } else if (propertyType == "Residential") {
+        } else if (propertyTypeurl == "Residential") {
             navigate(`/Residential-Property`);
         } else {
-            alert("select property type")
+            alert("select property type ")
         }
     };
 
     // Api  start
     useEffect(() => {
-        const basic = JSON.parse(localStorage.getItem("basicDetails"));
-        console.log(basic)
+        // url 
+        // const url = JSON.parse(localStorage.getItem("userData") || "{}")
+        // setPropertyTypeurl(url)
+        // console.log(url.url, "check url")
+        //   subtype data
+        const subtypedata = JSON.parse(localStorage.getItem("subTypeData") || "{}")
+        setGetSubTypeOptions(subtypedata)
+
+        // basic data
+        const basic = JSON.parse(localStorage.getItem("basicDetails") || "{}");
+        console.log(basic.propertyType)
         setPhone(basic.phone || "")
         setUserType(basic.userType)
         setAction(basic.action)
+        setPropertyTypeurl(basic.propertyTypeurl)
         setPropertyid(basic.propertyid)
         setSubType(basic.subType)
         dispatch(fetchPropertyTypes())
@@ -65,7 +80,7 @@ const PostProperty = () => {
 
     const handlePropertyType = async (id, name) => {
         console.log("get id", id, name)
-        setPropertyType(name)
+        setPropertyTypeurl(name)
         // const id = e.target.value
         setPropertyid(id)
 
@@ -154,9 +169,10 @@ const PostProperty = () => {
                                 </div>
 
                                 {/* Sub-Type Label and Options */}
+                                <label>Sub Property Type:</label>
 
                                 <div className="btn-group sub-options">
-                                    {getSubTypeOptions.map((v, k) => (
+                                    {Array.isArray(getSubTypeOptions) && getSubTypeOptions.map((v, k) => (
                                         <button
                                             key={k}
                                             value={v.subtype_name}
@@ -171,6 +187,8 @@ const PostProperty = () => {
                                         </button>
                                     ))}
                                 </div>
+
+
 
 
 
