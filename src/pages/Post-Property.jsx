@@ -42,10 +42,12 @@ const PostProperty = () => {
 
 
 
-        if (propertyTypeurl == "Residential" && subType == "Plot / Land") {
-            navigate(`/Residential-Plot`);
+        if (subType == "Plot / Land") {
+            navigate(`/Property-Plot`);
         } else if (propertyTypeurl == "Residential") {
             navigate(`/Residential-Property`);
+        } else if (propertyTypeurl == "Commercial") {
+            navigate(`/Commercial-Property`);
         } else {
             alert("select property type ")
         }
@@ -53,6 +55,7 @@ const PostProperty = () => {
 
     // Api  start
     useEffect(() => {
+
         // url 
         // const url = JSON.parse(localStorage.getItem("userData") || "{}")
         // setPropertyTypeurl(url)

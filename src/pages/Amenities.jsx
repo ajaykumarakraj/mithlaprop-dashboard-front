@@ -46,8 +46,10 @@ const Amenities = () => {
         }
     };
     ;
-
     const data = JSON.parse(localStorage.getItem("userData"));
+
+
+    // localStorage.removeItem("userData");
     console.log(data, "url");
 
 
@@ -166,7 +168,8 @@ const Amenities = () => {
 
                         </>
                         <div className="buttons">
-                            <a href={data.url} className="continue-btn">Back</a>
+                            <a href={data?.url} className="continue-btn">Back</a>
+
                             <button className="continue-btn" onClick={handleNext}>Next</button>
 
 

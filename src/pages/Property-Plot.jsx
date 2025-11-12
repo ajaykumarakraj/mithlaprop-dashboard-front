@@ -21,7 +21,7 @@ import { fetchPropertyTypes } from "../Redux/slices/authSlice"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
-const ResidentialPlot = () => {
+const PropertyPlot = () => {
     const dispatch = useDispatch()
     const location = useLocation();
     const navigate = useNavigate();
@@ -33,18 +33,27 @@ const ResidentialPlot = () => {
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
     const [bhk, setBhk] = useState("");
-    const [bhkroom, setBhkroom] = useState("1");
-    const [bathroom, setBathRooms] = useState("1");
-    const [balconies, setBalconies] = useState("1");
+
+    const [sides, setSideOption] = useState("1");
+
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
-    const [AreaUnit, setAreaUnit] = useState("sq.ft.");
-    const [unit, setUnit] = useState("1");
+    const [AreaUnit, setAreaUnit] = useState("");
+
+
+    // const [AreaLenth, setAreaLenth] = useState("");
+    // const [AreaBreadth, setAreaBreadth] = useState("")
+    const [Floors, setFloors] = useState("")
+    const [Boundary, setBoundary] = useState("")
+    const [ConstructionStatus, setConstructionStatus] = useState("")
+    const [Possession, setPossession] = useState("")
+
+
 
     const [ownership, setOwnership] = useState("");
-    const [propertyage, setPropertyAge] = useState("");
 
-    const [otherroom, setOtherroom] = useState([]);
+
+    // const [otherroom, setOtherroom] = useState([]);
 
     const [constraction, setConstraction] = useState("");
 
@@ -57,58 +66,47 @@ const ResidentialPlot = () => {
         { label: "Photos and Videos", icon: faImage },
 
     ];
-    const toggleOption = (option) => {
-        if (otherroom.includes(option)) {
-            setOtherroom(otherroom.filter((item) => item !== option));
-        } else {
-            setOtherroom([...otherroom, option]);
-        }
-    };
 
-    const PropertyAge = ["0 to 1 years", "1 to 5 years", "5 to 10 years", "10 years +"]
+
+    const openside = ["1 ", "2", "3", "3+"]
+
     const Ownership = ["Freehold", "Leasehold", "Co-operative society", "Power of Attorney"]
-    const bhkadd = ["1 RK", "1 BHK", "1.5 BHK", "2 BHK", "2.5 BHK", "3 BHK", "3.5 BHK", "4 BHK"]
-    const Otherroom = ["Pooja Room", "Study Room", "Servant Room", "Store Room"]
-    const bhkroomno = ["1 ", "2", "3", "4+"]
-    const BathRooms = ["1 ", "2", "3", "4+"]
-    const Balconies = ["1 ", "2", "3", "4+"]
-    const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
+
+
 
     const handleSubmit = () => {
         const profileData = {
+            Possession,
+            ConstructionStatus,
+            sides,
+            Boundary,
+            Floors,
             bhk,
-            bhkroom,
-            bathroom,
-            otherroom,
-            balconies,
             price,
             area,
             AreaUnit,
             cityName,
             locality,
-            subLocality,
+            
             apartment,
             ownership,
             furnishing,
             constraction,
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
-        localStorage.setItem("userData ", JSON.stringify({ url: location.pathname }));
+        localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
         navigate("/amenities");
     }
     // Api  start
     useEffect(() => {
         const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
         setBhk(Profile.bhk || "");
-        setBhkroom(Profile.bhkroom || "1");
-        setBathRooms(Profile.bathroom || "1");
-        setBalconies(Profile.balconies || "1");
         setArea(Profile.area || "");
-        setAreaUnit(Profile.AreaUnit || "");
+        setAreaUnit(Profile.AreaUnit || "sq.ft.");
         setPrice(Profile.price || "");
         setConstraction(Profile.constraction || "");
         setOwnership(Profile.ownership || "");
-        setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
+        // setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
         setFurnishing(Profile.furnishing || "");
         setCityName(Profile.cityName || "");
         setLocality(Profile.locality || "");
@@ -195,6 +193,77 @@ const ResidentialPlot = () => {
                                             </select>
                                         </div>
                                     </div>
+                                    {/* <h4 className="mt-3">Property Diamensions</h4>
+                                    <div className="col-md-6">
+
+                                        <label>Lenth of Plot</label>
+                                        <input
+                                            type="number"
+                                            placeholder={`Lenth of Plot (${AreaUnit || "sq.ft."})`}
+                                            value={AreaLenth}
+                                            onChange={(e) => setAreaLenth(e.target.value)}
+                                        />
+                                    </div> */}
+                                    {/* <div className="col-md-6">
+
+                                        <label>Breadth of Plot</label>
+                                        <input
+                                            type="number"
+                                            placeholder={`Breadth of Plot (${AreaUnit || "sq.ft."})`}
+                                            value={AreaBreadth}
+                                            onChange={(e) => setAreaBreadth(e.target.value)}
+                                        />
+                                    </div> */}
+
+                                    <h4 className="mt-3">Floors Allowed For Construction</h4>
+                                    <div className="col-md-6">
+
+                                        <input
+                                            type="number"
+                                            placeholder="No. of Floors"
+                                            value={Floors}
+                                            onChange={(e) => setFloors(e.target.value)}
+                                        />
+                                    </div>
+                                    <h4 className="mt-3">Is there  boundary wall around the property</h4>
+                                    <div className="btn-group sub-options">
+                                        <button className={Boundary === "Yes" ? "active" : ""} onClick={() => setBoundary("Yes")}> Yes </button>
+                                        <button className={Boundary === "NO" ? "active" : ""} onClick={() => setBoundary("NO")}> NO </button>
+
+                                    </div>
+                                    <h4 className="mt-3">No. of Open Side</h4>
+                                    <div className="btn-group sub-options">
+                                        {openside.map((option) => (
+                                            <button
+                                                key={option}
+                                                className={`${sides === option ? "active" : ""}`}
+                                                onClick={() => setSideOption(option)}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+
+
+                                    <h4 className="mt-3">Any Construction done on this Property</h4>
+                                    <div className="btn-group sub-options">
+                                        <button className={ConstructionStatus === "Yes" ? "active" : ""} onClick={() => setConstructionStatus("Yes")}> Yes </button>
+                                        <button className={ConstructionStatus === "NO" ? "active" : ""} onClick={() => setConstructionStatus("NO")}> NO </button>
+
+                                    </div>
+                                    <h4 className="mt-3">Ownership</h4>
+                                    <div className="btn-group sub-options">
+
+                                        {Ownership.map((option) => (
+                                            <button
+                                                key={option}
+                                                className={` ${ownership === option ? "active" : ""}`}
+                                                onClick={() => setOwnership(option)}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
                                     <h4 className="mt-3">Add Price Details</h4>
                                     <div className="col-md-6">
 
@@ -214,115 +283,34 @@ const ResidentialPlot = () => {
 
                                         </div>
                                     </div>
-                                    <h4 className="mt-3">Availability Status</h4>
-                                    <div className="btn-group sub-options">
-                                        <button className={constraction === "Ready To Move" ? "active" : ""} onClick={() => setConstraction("Ready To Move")}>
-                                            Ready To Move
-                                        </button>
-                                        <button className={constraction === "Under Constraction" ? "active" : ""} onClick={() => setConstraction("Under Constraction")}>
-                                            Under Constraction
-                                        </button>
-                                        <button className={constraction === "Available" ? "active" : ""} onClick={() => setConstraction("Available")}>
-                                            Available
-                                        </button>
-                                        <button className={constraction === "Sold" ? "active" : ""} onClick={() => setConstraction("Sold")}>
-                                            Sold
-                                        </button>
-                                        <button className={constraction === "inActive" ? "active" : ""} onClick={() => setConstraction("inActive")}>
-                                            inActive
-                                        </button>
-
-                                        <button className={constraction === "Rented" ? "active" : ""} onClick={() => setConstraction("Rented")}>
-                                            Rented
-                                        </button>
+                                    <h4 className="mt-3">Possession By</h4>
 
 
+
+
+
+                                    <div className="input-wrapper col-md-6">
+                                        <select
+                                            value={Possession}
+                                            onChange={(e) => setPossession(e.target.value)}
+                                        >
+                                            <option value="Within 3 Months">Within 3 Months</option>
+                                            <option value="Within 6 Months">Within 6 Months</option>
+
+                                            <option value="By 2026">By 2026</option>
+                                            <option value="By 2027">By 2027</option>
+                                            <option value="By 2028">By 2028</option>
+                                            <option value="By 2029">By 2029</option>
+                                            <option value="By 2030">By 2030</option>
+                                            <option value="By 2031">By 2031</option>
+                                        </select>
                                     </div>
 
-                                    {constraction === "Ready" && (
 
-                                        <div>
-                                            <label>Age Of Property</label>
-                                            <div className="btn-group sub-options">
 
-                                                {PropertyAge.map((option) => (
-                                                    <button
-                                                        key={option}
-                                                        className={` ${propertyage === option ? "active" : ""}`}
-                                                        onClick={() => setPropertyAge(option)}
-                                                    >
-                                                        {option}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )
 
-                                    }
 
-                                    {constraction === "Constraction" && (
-                                        <div className="input-wrapper col-md-6">
-                                            <select
-                                                value={unit}
-                                                onChange={(e) => setUnit(e.target.value)}
-                                            >
-                                                <option value="Within 3 Months">Within 3 Months</option>
-                                                <option value="Within 6 Months">Within 6 Months</option>
 
-                                                <option value="By 2026">By 2026</option>
-                                                <option value="By 2027">By 2027</option>
-                                                <option value="By 2028">By 2028</option>
-                                                <option value="By 2029">By 2029</option>
-                                                <option value="By 2030">By 2030</option>
-                                                <option value="By 2031">By 2031</option>
-                                            </select>
-                                        </div>
-                                    )
-
-                                    }
-
-                                    <h4 className="mt-3">Ownership</h4>
-                                    <div className="btn-group sub-options">
-
-                                        {Ownership.map((option) => (
-                                            <button
-                                                key={option}
-                                                className={` ${ownership === option ? "active" : ""}`}
-                                                onClick={() => setOwnership(option)}
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    <h4 className="mt-3">Other Room</h4>
-
-                                    <div className="btn-group sub-options">
-                                        {Otherroom.map((option) => (
-                                            <button
-                                                key={option}
-                                                className={otherroom.includes(option) ? "active" : ""}
-                                                onClick={() => toggleOption(option)}
-                                                type="button"
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    <h4 className="mt-3">Furnishing</h4>
-                                    <div className="btn-group sub-options">
-
-                                        {Furnishing.map((option) => (
-                                            <button
-                                                key={option}
-                                                className={` ${furnishing === option ? "active" : ""}`}
-                                                onClick={() => setFurnishing(option)}
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
-                                    </div>
                                     <label>City</label>
                                     <input
                                         type="text"
@@ -331,7 +319,7 @@ const ResidentialPlot = () => {
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
                                     <label>Locality </label>
-                                    {!locality && <span className="error-text"> (Locality is required.)</span>}
+
                                     <input
                                         type="text"
                                         value={locality}
@@ -376,4 +364,4 @@ const ResidentialPlot = () => {
     );
 };
 
-export default ResidentialPlot;
+export default PropertyPlot;

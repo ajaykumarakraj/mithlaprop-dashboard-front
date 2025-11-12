@@ -138,8 +138,9 @@ const Imageupload = () => {
                 localStorage.removeItem("amenitiesdata");
                 localStorage.removeItem("basicDetails");
                 localStorage.removeItem("propertyProfile");
-                // localStorage.removeItem("userData");
+                localStorage.removeItem("userData");
                 localStorage.removeItem("subTypeData");
+                navigate("/listings");
 
             }
 
