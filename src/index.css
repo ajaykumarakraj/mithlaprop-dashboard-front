@@ -732,6 +732,27 @@ select {
     font-size: 14px;
 }
 
+
+.Active-btn {
+    background: #304357;
+    padding: 7px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 300 !important;
+}
+
+.listheadingspace {
+    gap: 20px;
+}
+
+.text-transform {
+    text-transform: capitalize;
+}
+
+.listing img {
+    height: 100px;
+}
+
 /* Mobile Menu */
 @media (max-width: 992px) {
     .navbar-nav {

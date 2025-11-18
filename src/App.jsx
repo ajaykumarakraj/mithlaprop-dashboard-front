@@ -44,6 +44,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/postproperty/:id/:property_type"
+          element={
+            <ProtectedRoute>
+              <PostProperty />
+            </ProtectedRoute>
+          }
+        />
 
 
         <Route

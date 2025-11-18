@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
 import "../assets/css/listing.css";
 import { useDispatch, useSelector } from "react-redux";
-import { signupUser, verifyOtp, closeOtpPopup, resetRedirect } from "../Redux/slices/authSlice";
+import { signupUser, verifyOtp, closeOtpPopup, resetRedirect } from "../Redux/slices/AuthSlice";
 
 const Login = () => {
     const navigate = useNavigate();

@@ -14,13 +14,12 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
 const CommercialProperty = () => {
-    const dispatch = useDispatch()
+
     const location = useLocation();
     const navigate = useNavigate();
     // const { types, loading, error } = useSelector(state => state.auth.propertyType)
@@ -44,13 +43,13 @@ const CommercialProperty = () => {
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
     // const [unit, setUnit] = useState("1");
-    const [constractionby, setConstractionby] = useState("")
+    const [possession_by, setPossessionby] = useState("")
     const [officespace, setOfficeSpace] = useState("");
     const [propertyage, setPropertyAge] = useState("");
     const [pantry, setPantry] = useState("")
     const [facing, setFacing] = useState("")
     const [washroom, setWashroom] = useState("")
-    const [possession, setPossession] = useState("");
+    const [possessionstatus, setPossessionStatus] = useState("");
 
     const [furnishing, setFurnishing] = useState("");
     const steps = [
@@ -63,7 +62,7 @@ const CommercialProperty = () => {
     ];
 
     const Pantry = ["Private", "Shared", "Not Available"]
-    const PossessionData = ["Ready To Move", "Under Constraction", "Available", "Sold", "inActive"]
+    const PossessionData = ["Ready To Move", "Under Construction", "Available", "Sold", "inActive"]
     const PropertyAge = ["0 to 1 years", "1 to 5 years", "5 to 10 years", "10 years +"]
     const OfficeSpace = ["Semi-Fitted", "Fitted Space", "Sell and Core"]
     const Facing = ["Select Facing", "East", "West", "North", "South", "North East", "North West", "South East", "South West"]
@@ -81,26 +80,21 @@ const CommercialProperty = () => {
             power,
             lift,
             propertyage,
-            constractionby,
+            possession_by,
             openparking,
             coveredparking,
             officespace,
             washroom,
             pantry,
-
-            bathroom,
-
             balconies,
             price,
             area,
             AreaUnit,
             cityName,
             locality,
-
             apartment,
-            ownership,
             furnishing,
-            possession,
+            possessionstatus,
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
         localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
@@ -112,24 +106,29 @@ const CommercialProperty = () => {
     useEffect(() => {
 
         const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
-
-
-
         setBalconies(Profile.balconies || "1");
+        setPossessionby(Profile.possession_by || "")
+        setPantry(Profile.pantry || "")
+        setWashroom(Profile.washroom || "")
+        setPropertyAge(Profile.propertyage || "")
+        setOpenParking(Profile.openparking || "")
+        setCoveredParking(Profile.coveredparking || "")
+        setFloor(Profile.floor || "")
+        setLift(Profile.lift || "")
+        setFacing(Profile.facing || "")
+        setTower(Profile.tower | "")
+        setPower(Profile.power || "")
         setArea(Profile.area || "");
         setAreaUnit(Profile.AreaUnit || "sq.ft.");
         setPrice(Profile.price || "");
-        setPossession(Profile.possession || "");
+        setPossessionStatus(Profile.possessionstatus || "");
         setOfficeSpace(Profile.officespace || "");
-
         setFurnishing(Profile.furnishing || "");
         setCityName(Profile.cityName || "");
         setLocality(Profile.locality || "");
-
         setApartment(Profile.apartment || "");
 
-        dispatch(fetchPropertyTypes());
-    }, [dispatch]);
+    }, []);
 
     // get api Property Type:
     return (
@@ -229,14 +228,14 @@ const CommercialProperty = () => {
                                     <div className="btn-group sub-options">
                                         {
                                             PossessionData.map((value, k) => (
-                                                <button key={k} className={possession === value ? "active" : ""} onClick={() => setPossession(value)}>
+                                                <button key={k} className={possessionstatus === value ? "active" : ""} onClick={() => setPossessionStatus(value)}>
                                                     {value}
                                                 </button>
                                             ))
                                         }
                                     </div>
 
-                                    {possession === "Ready To Move" && (
+                                    {possessionstatus === "Ready To Move" && (
 
                                         <div>
                                             <label>Age Of Property</label>
@@ -257,22 +256,25 @@ const CommercialProperty = () => {
 
                                     }
 
-                                    {possession === "Under Constraction" && (
-                                        <div className="input-wrapper col-md-6">
-                                            <select
-                                                value={constractionby}
-                                                onChange={(e) => setConstractionby(e.target.value)}
-                                            >
-                                                <option value="Within 3 Months">Within 3 Months</option>
-                                                <option value="Within 6 Months">Within 6 Months</option>
+                                    {possessionstatus === "Under Construction" && (
+                                        <div>
+                                            <label>Possession By</label>
+                                            <div className="input-wrapper col-md-6">
+                                                <select
+                                                    value={possession_by}
+                                                    onChange={(e) => setPossessionby(e.target.value)}
+                                                >
+                                                    <option value="Within 3 Months">Within 3 Months</option>
+                                                    <option value="Within 6 Months">Within 6 Months</option>
 
-                                                <option value="By 2026">By 2026</option>
-                                                <option value="By 2027">By 2027</option>
-                                                <option value="By 2028">By 2028</option>
-                                                <option value="By 2029">By 2029</option>
-                                                <option value="By 2030">By 2030</option>
-                                                <option value="By 2031">By 2031</option>
-                                            </select>
+                                                    <option value="By 2026">By 2026</option>
+                                                    <option value="By 2027">By 2027</option>
+                                                    <option value="By 2028">By 2028</option>
+                                                    <option value="By 2029">By 2029</option>
+                                                    <option value="By 2030">By 2030</option>
+                                                    <option value="By 2031">By 2031</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     )
 
@@ -405,6 +407,7 @@ const CommercialProperty = () => {
                                     <h4 className="mt-3"> Facing</h4>
 
                                     <select
+                                        value={facing}
                                         onChange={(e) => setFacing(e.target.value)}>
                                         {
                                             Facing.map((value, k) => (

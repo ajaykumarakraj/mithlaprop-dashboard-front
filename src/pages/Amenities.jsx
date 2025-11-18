@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../component/Navbar";
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 

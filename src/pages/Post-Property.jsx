@@ -3,19 +3,20 @@ import React, { useEffect, useState } from "react";
 import PostSidebar from "../component/PostSidebar";
 import Navbar from "../component/Navbar";
 import { useLocation } from "react-router-dom";
-
+import api from "../component/Baseurl";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 // import "../assets/css/PostProperty.css";
 
 const PostProperty = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
+    const { id } = useParams();
+    const { types } = useSelector(state => state.property.propertyType);
 
-    const { types, loading, error } = useSelector(state => state.auth.propertyType)
     const [getSubTypeOptions, setGetSubTypeOptions] = useState([])
     const [step, setStep] = useState(0);
     const [userType, setUserType] = useState("owner");
@@ -24,6 +25,8 @@ const PostProperty = () => {
     const [propertyTypeurl, setPropertyTypeurl] = useState("")
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
+
+    console.log("Received ID:", id, propertyTypeurl);
 
 
     const handleNext = () => {
@@ -42,7 +45,7 @@ const PostProperty = () => {
 
 
 
-        if (subType == "Plot / Land") {
+        if (subType == "Plot / Land" || "Land" || "Plot" || "Lands" || "Lands / Plots" || "plots" || "plots / lands") {
             navigate(`/Property-Plot`);
         } else if (propertyTypeurl == "Residential") {
             navigate(`/Residential-Property`);
@@ -53,14 +56,45 @@ const PostProperty = () => {
         }
     };
 
+
+
+    // useEffect(() => {
+    //     const getData = async () => {
+    //         try {
+    //             const response = await api.get(`/api/get-property/1/${btnValue}`, {
+    //                 headers: {
+    //                     Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`,
+    //                 },
+    //             });
+    //             console.log("listing data", response.data);
+    //             // console.log("image", response.data.data[13].media[0].file_url);
+    //             setListings(response.data.data);
+    //         } catch (error) {
+    //             console.log("error", error);
+    //         }
+    //         // setListings(response.data);
+    //     }
+    //     getData();
+    // }, [btnValue])
+
     // Api  start
     useEffect(() => {
-
-        // url 
-        // const url = JSON.parse(localStorage.getItem("userData") || "{}")
-        // setPropertyTypeurl(url)
-        // console.log(url.url, "check url")
-        //   subtype data
+        const getData = async () => {
+            try {
+                const response = await api.get(`/api/edit-property/${id}/${propertyTypeurl}`, {
+                    headers: {
+                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`,
+                    },
+                });
+                console.log("listing data", response.data);
+                // console.log("image", response.data.data[13].media[0].file_url);
+                // setListings(response.data.data);
+            } catch (error) {
+                console.log("error", error);
+            }
+            // setListings(response.data);
+        }
+        getData();
         const subtypedata = JSON.parse(localStorage.getItem("subTypeData") || "{}")
         setGetSubTypeOptions(subtypedata)
 
@@ -75,10 +109,6 @@ const PostProperty = () => {
         setSubType(basic.subType)
         dispatch(fetchPropertyTypes())
     }, [dispatch])
-    // get api Property Type:
-    // if (loading) return <div>Loading property types...</div>;
-    // if (error) return <div>Error: {error.toString()}</div>;
-    // console.log("get data", types)
 
 
     const handlePropertyType = async (id, name) => {
@@ -102,7 +132,7 @@ const PostProperty = () => {
             console.log(error)
         }
     }
-
+    console.log(types)
     return (
         <div className="main-layout">
 
@@ -156,7 +186,7 @@ const PostProperty = () => {
                                 {/* Property Type */}
                                 <label>Property Type:</label>
                                 <div className="btn-group property-type">
-                                    {types
+                                    {Array.isArray(types) && types
                                         .filter((v) => v.status === "1")
                                         .map((v, k) => (
                                             <button

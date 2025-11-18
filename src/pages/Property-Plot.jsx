@@ -16,25 +16,25 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+
+// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
 const PropertyPlot = () => {
-    const dispatch = useDispatch()
+
     const location = useLocation();
     const navigate = useNavigate();
-    // const { types, loading, error } = useSelector(state => state.auth.propertyType)
+    // const { types, loading, error } = useSelector(state => state.property.propertyType)
     const [step, setStep] = useState(1);
 
     const [cityName, setCityName] = useState("");
-    const [subLocality, setSubLocality] = useState("");
+    // const [subLocality, setSubLocality] = useState("");
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
-    const [bhk, setBhk] = useState("");
+    // const [bhk, setBhk] = useState("");
 
-    const [sides, setSideOption] = useState("1");
+    const [plotno, setPlotno] = useState("1");
 
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
@@ -44,9 +44,9 @@ const PropertyPlot = () => {
     // const [AreaLenth, setAreaLenth] = useState("");
     // const [AreaBreadth, setAreaBreadth] = useState("")
     const [Floors, setFloors] = useState("")
-    const [Boundary, setBoundary] = useState("")
+    // const [Boundary, setBoundary] = useState("")
     const [ConstructionStatus, setConstructionStatus] = useState("")
-    const [Possession, setPossession] = useState("")
+    const [possession_by, setPossession] = useState("")
 
 
 
@@ -55,7 +55,7 @@ const PropertyPlot = () => {
 
     // const [otherroom, setOtherroom] = useState([]);
 
-    const [constraction, setConstraction] = useState("");
+    const [construction, setConstruction] = useState("");
 
     const [furnishing, setFurnishing] = useState("");
     const steps = [
@@ -76,22 +76,20 @@ const PropertyPlot = () => {
 
     const handleSubmit = () => {
         const profileData = {
-            Possession,
+            possession_by,
             ConstructionStatus,
-            sides,
-            Boundary,
+            plotno,
             Floors,
-            bhk,
+
             price,
             area,
             AreaUnit,
             cityName,
             locality,
-            
             apartment,
             ownership,
             furnishing,
-            constraction,
+            construction,
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
         localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
@@ -100,21 +98,25 @@ const PropertyPlot = () => {
     // Api  start
     useEffect(() => {
         const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
-        setBhk(Profile.bhk || "");
+        // setBhk(Profile.bhk || "");
+        setFloors(Profile.Floors || "")
+        setPlotno(Profile.plotno || "")
+        setPossession(Profile.possession_by || "Within 3 Months")
+        setConstructionStatus(Profile.ConstructionStatus || "")
         setArea(Profile.area || "");
         setAreaUnit(Profile.AreaUnit || "sq.ft.");
         setPrice(Profile.price || "");
-        setConstraction(Profile.constraction || "");
+        setConstruction(Profile.construction || "");
         setOwnership(Profile.ownership || "");
         // setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
         setFurnishing(Profile.furnishing || "");
         setCityName(Profile.cityName || "");
         setLocality(Profile.locality || "");
-        setSubLocality(Profile.subLocality || "");
+        // setSubLocality(Profile.subLocality || "");
         setApartment(Profile.apartment || "");
 
-        dispatch(fetchPropertyTypes());
-    }, [dispatch]);
+        // dispatch(fetchPropertyTypes());
+    }, []);
 
     // get api Property Type:
     return (
@@ -225,19 +227,19 @@ const PropertyPlot = () => {
                                             onChange={(e) => setFloors(e.target.value)}
                                         />
                                     </div>
-                                    <h4 className="mt-3">Is there  boundary wall around the property</h4>
+                                    {/* <h4 className="mt-3">Is there  boundary wall around the property</h4>
                                     <div className="btn-group sub-options">
                                         <button className={Boundary === "Yes" ? "active" : ""} onClick={() => setBoundary("Yes")}> Yes </button>
                                         <button className={Boundary === "NO" ? "active" : ""} onClick={() => setBoundary("NO")}> NO </button>
 
-                                    </div>
-                                    <h4 className="mt-3">No. of Open Side</h4>
+                                    </div> */}
+                                    <h4 className="mt-3">Plot No.</h4>
                                     <div className="btn-group sub-options">
                                         {openside.map((option) => (
                                             <button
                                                 key={option}
-                                                className={`${sides === option ? "active" : ""}`}
-                                                onClick={() => setSideOption(option)}
+                                                className={`${plotno === option ? "active" : ""}`}
+                                                onClick={() => setPlotno(option)}
                                             >
                                                 {option}
                                             </button>
@@ -285,13 +287,9 @@ const PropertyPlot = () => {
                                     </div>
                                     <h4 className="mt-3">Possession By</h4>
 
-
-
-
-
                                     <div className="input-wrapper col-md-6">
                                         <select
-                                            value={Possession}
+                                            value={possession_by}
                                             onChange={(e) => setPossession(e.target.value)}
                                         >
                                             <option value="Within 3 Months">Within 3 Months</option>
@@ -327,13 +325,13 @@ const PropertyPlot = () => {
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
 
-                                    <label>Sub Locality (optional)</label>
+                                    {/* <label>Sub Locality (optional)</label>
                                     <input
                                         type="text"
                                         value={subLocality}
                                         placeholder="Enter Sub Locality "
                                         onChange={(e) => setSubLocality(e.target.value)}
-                                    />
+                                    /> */}
                                     <label>Apartment/Society</label>
                                     <input
                                         type="text"

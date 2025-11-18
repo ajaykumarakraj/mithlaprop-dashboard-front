@@ -13,16 +13,18 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/authSlice"
+// import { useDispatch } from "react-redux";
+// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
 const Residentialproperty = () => {
-    const dispatch = useDispatch()
+
     const location = useLocation();
     const navigate = useNavigate();
-    // const { types, loading, error } = useSelector(state => state.auth.propertyType)
+
+    // const { types, loading, error } = useSelector((state) => state.property.propertyType);
+
     const [step, setStep] = useState(1);
 
     const [cityName, setCityName] = useState("");
@@ -37,13 +39,13 @@ const Residentialproperty = () => {
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
     // const [unit, setUnit] = useState("1");
-    const [constractionby, setConstractionby] = useState("")
+    const [constructionby, setConstructionby] = useState("")
     const [ownership, setOwnership] = useState("");
     const [propertyage, setPropertyAge] = useState("");
 
     const [otherroom, setOtherroom] = useState([]);
 
-    const [constraction, setConstraction] = useState("");
+    const [construction, setConstruction] = useState("");
 
     const [furnishing, setFurnishing] = useState("");
     const steps = [
@@ -80,7 +82,7 @@ const Residentialproperty = () => {
             balconies,
             price,
 
-            constractionby,
+            constructionby,
             area,
             AreaUnit,
             cityName,
@@ -89,7 +91,7 @@ const Residentialproperty = () => {
             apartment,
             ownership,
             furnishing,
-            constraction,
+            construction,
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
         localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
@@ -108,17 +110,17 @@ const Residentialproperty = () => {
         setArea(Profile.area || "");
         setAreaUnit(Profile.AreaUnit || "sq.ft.");
         setPrice(Profile.price || "");
-        setConstraction(Profile.constraction || "");
+        setConstruction(Profile.construction || "");
         setOwnership(Profile.ownership || "");
         setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
         setFurnishing(Profile.furnishing || "");
         setCityName(Profile.cityName || "");
         setLocality(Profile.locality || "");
-
+        setPropertyAge(Profile.propertyage || "")
         setApartment(Profile.apartment || "");
-
-        dispatch(fetchPropertyTypes());
-    }, [dispatch]);
+        setConstructionby(Profile.constructionby || "")
+        // dispatch(fetchPropertyTypes());
+    }, []);
     console.log(AreaUnit, "check area unit")
     // get api Property Type:
     return (
@@ -139,7 +141,9 @@ const Residentialproperty = () => {
                                         <div className={`circle-icon ${index <= step ? "active" : ""}`}>
                                             <FontAwesomeIcon icon={s.icon} />
                                         </div>
-                                        <div className="textadd"> <span className="label">{s.label}</span></div>
+                                        <div className="textadd">
+                                            <span className="label">{s.label}</span>
+                                        </div>
                                     </div>
                                     {index < steps.length - 1 && (
                                         <div className={`vertical-line ${index < step ? "filled" : ""}`}></div>
@@ -263,30 +267,30 @@ const Residentialproperty = () => {
                                     </div>
                                     <h4 className="mt-3">Availability Status</h4>
                                     <div className="btn-group sub-options">
-                                        <button className={constraction === "Ready To Move" ? "active" : ""} onClick={() => setConstraction("Ready To Move")}>
+                                        <button className={construction === "Ready To Move" ? "active" : ""} onClick={() => setConstruction("Ready To Move")}>
                                             Ready To Move
                                         </button>
-                                        <button className={constraction === "Under Construction" ? "active" : ""} onClick={() => setConstraction("Under Construction")}>
+                                        <button className={construction === "Under Construction" ? "active" : ""} onClick={() => setConstruction("Under Construction")}>
                                             Under Construction
                                         </button>
-                                        <button className={constraction === "Available" ? "active" : ""} onClick={() => setConstraction("Available")}>
+                                        <button className={construction === "Available" ? "active" : ""} onClick={() => setConstruction("Available")}>
                                             Available
                                         </button>
-                                        <button className={constraction === "Sold" ? "active" : ""} onClick={() => setConstraction("Sold")}>
+                                        <button className={construction === "Sold" ? "active" : ""} onClick={() => setConstruction("Sold")}>
                                             Sold
                                         </button>
-                                        <button className={constraction === "inActive" ? "active" : ""} onClick={() => setConstraction("inActive")}>
+                                        <button className={construction === "inActive" ? "active" : ""} onClick={() => setConstruction("inActive")}>
                                             inActive
                                         </button>
 
-                                        <button className={constraction === "Rented" ? "active" : ""} onClick={() => setConstraction("Rented")}>
+                                        <button className={construction === "Rented" ? "active" : ""} onClick={() => setConstruction("Rented")}>
                                             Rented
                                         </button>
 
 
                                     </div>
 
-                                    {constraction === "Ready To Move" && (
+                                    {construction === "Ready To Move" && (
 
                                         <div>
                                             <label>Age Of Property</label>
@@ -307,22 +311,26 @@ const Residentialproperty = () => {
 
                                     }
 
-                                    {constraction === "Under Constraction" && (
-                                        <div className="input-wrapper col-md-6">
-                                            <select
-                                                value={constractionby}
-                                                onChange={(e) => setConstractionby(e.target.value)}
-                                            >
-                                                <option value="Within 3 Months">Within 3 Months</option>
-                                                <option value="Within 6 Months">Within 6 Months</option>
+                                    {construction === "Under Construction" && (
+                                        <div>
+                                            <label>Possession By</label>
+                                            <div className="input-wrapper col-md-6">
+                                                <select
+                                                    value={constructionby}
+                                                    onChange={(e) => setConstructionby(e.target.value)}
+                                                >
+                                                    {/* <option value={constructionby}>{constructionby}</option> */}
+                                                    <option value="Within 3 Months">Within 3 Months</option>
+                                                    <option value="Within 6 Months">Within 6 Months</option>
 
-                                                <option value="By 2026">By 2026</option>
-                                                <option value="By 2027">By 2027</option>
-                                                <option value="By 2028">By 2028</option>
-                                                <option value="By 2029">By 2029</option>
-                                                <option value="By 2030">By 2030</option>
-                                                <option value="By 2031">By 2031</option>
-                                            </select>
+                                                    <option value="By 2026">By 2026</option>
+                                                    <option value="By 2027">By 2027</option>
+                                                    <option value="By 2028">By 2028</option>
+                                                    <option value="By 2029">By 2029</option>
+                                                    <option value="By 2030">By 2030</option>
+                                                    <option value="By 2031">By 2031</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     )
 
