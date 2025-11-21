@@ -70,9 +70,11 @@ const Amenities = () => {
     // Api  start
     useEffect(() => {
         // localStorage.removeItem("amenitiesdata");
-
+        const editData = JSON.parse(localStorage.getItem("editData") || "{}");
+        console.log("editData", editData.aminity);
         const amenityData = JSON.parse(localStorage.getItem("amenitiesdata"));
-        setAmenities(amenityData?.amenities || []);
+
+        setAmenities(editData?.aminity || amenityData?.amenities || []);
         console.log(amenityData, "hrghfdghk")
 
         getamenities()

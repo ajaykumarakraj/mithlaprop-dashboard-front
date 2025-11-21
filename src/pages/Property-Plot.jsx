@@ -80,7 +80,6 @@ const PropertyPlot = () => {
             ConstructionStatus,
             plotno,
             Floors,
-
             price,
             area,
             AreaUnit,

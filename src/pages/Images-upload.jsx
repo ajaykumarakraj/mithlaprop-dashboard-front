@@ -12,18 +12,18 @@ import { useNavigate } from "react-router-dom";
 
 import Navbar from "../component/Navbar";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
+
+
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
 const Imageupload = () => {
     const navigate = useNavigate();
 
-    const dispatch = useDispatch()
-    const { types, loading, error } = useSelector(state => state.property.propertyType)
+
 
     const [step, setStep] = useState(3);
+    const [apiMedia, setApiMedia] = useState([]);
 
 
     const [previews, setPreviews] = useState([]);
@@ -42,10 +42,17 @@ const Imageupload = () => {
     };
 
 
-    // const handleRemoveImage = (index) => {
-    //     // ✅ Optional: remove a specific image
-    //     setPreviews((prev) => prev.filter((_, i) => i !== index));
-    // };
+    const handleRemoveImage = (index) => {
+        // 1. Remove from previews
+        setPreviews((prev) => prev.filter((_, i) => i !== index));
+
+        // 2. Remove from local uploaded files
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+
+        // 3. Remove from API media if needed
+        setApiMedia((prev) => prev.filter((_, i) => i !== index));
+    };
+
 
     const steps = [
         { label: "Basic Details", icon: faHome },
@@ -58,12 +65,22 @@ const Imageupload = () => {
 
     // Api  start
     useEffect(() => {
+        const storedData = JSON.parse(localStorage.getItem("editData") || "{}");
 
-        dispatch(fetchPropertyTypes())
-    }, [dispatch])
+        if (storedData?.media) {
+            const apiImages = storedData.media.map(
+                (item) => `https://api.squarebigha.com/${item.file_url}`
+            );
+
+            setApiMedia(storedData.media); // Store API media list
+            setPreviews(apiImages);        // Show preview
+        }
+    }, []);
+
+
     // get api Property Type:
 
-
+    console.log(previews, "preview image");
 
     // if (loading) return <div>Loading property types...</div>;
     // if (error) return <div>Error: {error.toString()}</div>;
@@ -74,7 +91,7 @@ const Imageupload = () => {
         const basic = JSON.parse(localStorage.getItem("basicDetails") || "{}");
         const profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
         const amenityData = JSON.parse(localStorage.getItem("amenitiesdata") || "{}");
-        if (basic.propertyTypeurl == "Commercial") {
+        if (basic.propertyTypeurl == "commercial") {
             const ids = Array.isArray(amenityData?.amenities)
                 ? amenityData.amenities.map(item => item.id)
                 : [];
@@ -338,6 +355,7 @@ const Imageupload = () => {
                                         {previews.map((src, index) => (
                                             <div key={index} className="preview-item">
                                                 <img
+
                                                     src={src}
                                                     alt={`Preview ${index}`}
                                                     className="preview-image"

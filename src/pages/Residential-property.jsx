@@ -65,12 +65,12 @@ const Residentialproperty = () => {
     };
 
     const PropertyAge = ["0 to 1 years", "1 to 5 years", "5 to 10 years", "10 years +"]
-    const Ownership = ["Freehold", "Leasehold", "Co-operative society", "Power of Attorney"]
+    const Ownership = ["Freehold", "Leasehold", "Co-Operative Society", "Power of Attorney"]
     const bhkadd = ["1 RK", "1 BHK", "1.5 BHK", "2 BHK", "2.5 BHK", "3 BHK", "3.5 BHK", "4 BHK"]
     const Otherroom = ["Pooja Room", "Study Room", "Servant Room", "Store Room"]
-    const bhkroomno = ["1 ", "2", "3", "4+"]
-    const BathRooms = ["1 ", "2", "3", "4+"]
-    const Balconies = ["1 ", "2", "3", "4+"]
+    const bhkroomno = ["1", "2", "3", "4+"]
+    const BathRooms = ["1", "2", "3", "4+"]
+    const Balconies = ["1", "2", "3", "4+"]
     const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
 
     const handleSubmit = () => {
@@ -101,24 +101,75 @@ const Residentialproperty = () => {
     }
     // Api  start
     useEffect(() => {
-
+        const editData = JSON.parse(localStorage.getItem("editData") || "{}");
+        console.log("editData", editData);
         const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
-        setBhk(Profile.bhk || "");
-        setBhkroom(Profile.bhkroom || "1");
-        setBathRooms(Profile.bathroom || "1");
-        setBalconies(Profile.balconies || "1");
-        setArea(Profile.area || "");
-        setAreaUnit(Profile.AreaUnit || "sq.ft.");
-        setPrice(Profile.price || "");
-        setConstruction(Profile.construction || "");
-        setOwnership(Profile.ownership || "");
-        setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
-        setFurnishing(Profile.furnishing || "");
-        setCityName(Profile.cityName || "");
-        setLocality(Profile.locality || "");
-        setPropertyAge(Profile.propertyage || "")
-        setApartment(Profile.apartment || "");
-        setConstructionby(Profile.constructionby || "")
+        if (editData && Object.keys(editData).length > 0) {
+
+            setBhk(
+                editData.bhk_type || Profile.bedrooms || ""
+            );
+
+            setBhkroom(
+                editData.bedrooms || Profile.bhk_type || "1"
+            );
+
+            setBathRooms(
+                editData.bedrooms || Profile.bathrooms || "1"
+            );
+
+            setBalconies(
+                editData.balcony || Profile.balcony || "1"
+            );
+
+            setArea(
+                editData.area || Profile.area || ""
+            );
+
+            setAreaUnit(
+                editData.area_unit || Profile.area_unit || "sq.ft."
+            );
+
+            setPrice(
+                editData.price || Profile.price || ""
+            );
+
+            setOwnership(
+                editData.ownership || Profile.ownership || ""
+            );
+            setOtherroom(
+                editData.other_room || Profile.otherroom || ""
+            )
+            setFurnishing(
+                editData.furnishing || Profile.furnishing || ""
+            );
+
+            setCityName(
+                editData.property_city || Profile.property_city || ""
+            );
+
+            setLocality(
+                editData.locality || Profile.locality || ""
+            );
+
+            setApartment(
+                editData.apartment_society || Profile.apartment_society || ""
+            );
+
+            setPropertyAge(
+                editData.property_age || Profile.property_age || ""
+            );
+
+            setConstruction(
+                editData.status || Profile.status || ""
+            );
+
+            setConstructionby(
+                editData.possession_by || Profile.possession_by || ""
+            );
+        }
+
+
         // dispatch(fetchPropertyTypes());
     }, []);
     console.log(AreaUnit, "check area unit")
@@ -268,7 +319,7 @@ const Residentialproperty = () => {
                                     <h4 className="mt-3">Availability Status</h4>
                                     <div className="btn-group sub-options">
                                         <button className={construction === "Ready To Move" ? "active" : ""} onClick={() => setConstruction("Ready To Move")}>
-                                            Ready To Move
+                                            Ready to Move
                                         </button>
                                         <button className={construction === "Under Construction" ? "active" : ""} onClick={() => setConstruction("Under Construction")}>
                                             Under Construction
@@ -276,11 +327,11 @@ const Residentialproperty = () => {
                                         <button className={construction === "Available" ? "active" : ""} onClick={() => setConstruction("Available")}>
                                             Available
                                         </button>
-                                        <button className={construction === "Sold" ? "active" : ""} onClick={() => setConstruction("Sold")}>
+                                        <button className={construction === "sold" ? "active" : ""} onClick={() => setConstruction("Sold")}>
                                             Sold
                                         </button>
-                                        <button className={construction === "inActive" ? "active" : ""} onClick={() => setConstruction("inActive")}>
-                                            inActive
+                                        <button className={construction === "InActive" ? "active" : ""} onClick={() => setConstruction("inActive")}>
+                                            InActive
                                         </button>
 
                                         <button className={construction === "Rented" ? "active" : ""} onClick={() => setConstruction("Rented")}>
