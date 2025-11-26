@@ -1,6 +1,6 @@
 // src/components/PostProperty.js
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { use, useEffect, useState } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHome,
@@ -11,40 +11,38 @@ import {
     faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../component/Navbar";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/PropertySlice";
+import { useNavigate } from "react-router-dom";
+// import { useDispatch, useSelector } from "react-redux";
+// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice";
 import axios from "axios";
 
 const PostProperty = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { id, property_type } = useParams();
+
+
     const [step, setStep] = useState(0);
-    const { types } = useSelector(state => state.property.propertyType);
+
 
     const [getSubTypeOptions, setGetSubTypeOptions] = useState([]);
     const [userType, setUserType] = useState("");
     const [action, setAction] = useState("");
+    const [propertylist, setPropertylist] = useState([]);
     const [propertyTypeurl, setPropertyTypeurl] = useState("");
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
 
-    // console.log("PARAMS:", id, property_type);
-    const isEdit = id && property_type ? true : false;
     const steps = [
-        { label: "Basic Details", icon: faHome, link: "post-property" },
-        { label: "Properety Profile", icon: faBed, link: "profile" },
-        { label: "Amenities Section", icon: faCheckCircle, link: "amenities" },
-        { label: "Photos", icon: faImage, link: "uploadphotos" },
+        { label: "Basic Details", icon: faHome, },
+        { label: "Properety Profile", icon: faBed, },
+        { label: "Amenities Section", icon: faCheckCircle, },
+        { label: "Photos", icon: faImage, },
 
     ];
-
     // -------------------------------
     // LOCAL STORAGE LOAD
     // -------------------------------
     useEffect(() => {
-        dispatch(fetchPropertyTypes());
+
 
         const savedSubtype = JSON.parse(localStorage.getItem("subTypeData") || "[]");
         setGetSubTypeOptions(savedSubtype);
@@ -56,55 +54,39 @@ const PostProperty = () => {
         setAction(basic.action || "");
         setPropertyTypeurl(basic.propertyTypeurl || "");
         setSubType(basic.subType || "");
-    }, [dispatch]);
+    }, []);
 
     // -------------------------------
-    // EDIT MODE (AUTO LOAD)
+    // load Property Types
     // -------------------------------
     useEffect(() => {
-        if (!id || !property_type) return;
 
-        const getData = async () => {
+        const getPropertyTypes = async () => {
             try {
-                const response = await axios.get(
-                    `https://api.squarebigha.com/api/edit-property/${id}/${property_type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
+                const res = await axios.get("https://api.squarebigha.com/api/get-property-type", {
+                    headers: {
+                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
                     }
-                );
-                if (response.data.status === 200) {
-                    const list = response.data.data;
-                    console.log("Edit Data:", list);
-                    localStorage.setItem("editData", JSON.stringify(list));
-                    setPhone(list.phone || "");
-                    setUserType(list.user_type || "");
-                    setAction(list.listing_type || "");
-                    setPropertyTypeurl(list.property_type || "");
-                    setSubType(list.property_sub_type || "");
-                    // temporary single subtype until full list loads
-                    setGetSubTypeOptions([{ subtype_name: list.property_sub_type }]);
-
-                    // load full subtype list by ID
-                    if (list.property_type_id) {
-                        handlePropertyType(list.property_type_id, list.property_type);
-                    }
+                })
+                // console.log("Property Types:", res.data.data);
+                if (res.data.status === 200) {
+                    setPropertylist(res.data.data);
                 }
-            } catch (err) {
-                console.log("Edit Error:", err);
+            } catch (error) {
+                console.log("Property Type error:", error);
             }
-        };
+        }
+        getPropertyTypes()
+    }, [subType]);
 
-        getData();
-    }, [id, property_type]);
+
 
     // -------------------------------
     // PROPERTY TYPE CLICK
     // -------------------------------
     const handlePropertyType = async (id, name) => {
         setPropertyTypeurl(name);
-        setSubType(""); // reset old selection
+
 
         try {
             const res = await axios.get(
@@ -151,89 +133,16 @@ const PostProperty = () => {
         ];
 
         if (plotTypes.includes(subType.toLowerCase())) {
-            navigate("/Property-Plot");
+            navigate("/property-plot");
         } else if (propertyTypeurl === "residential") {
-            navigate("/Residential-Property");
+            navigate("/residential-property");
         } else if (propertyTypeurl === "commercial") {
-            navigate("/Commercial-Property");
+            navigate("/commercial-property");
         } else {
             alert("Please select property type");
         }
     };
-    const handleupdate = (link) => {
 
-        console.log("PARAMS:", id, property_type);
-        console.log("selected:", link);
-
-        if (link === "post-property") {
-            navigate("/postproperty")
-        } else if (link === "profile") {
-            const plotTypes = [
-                "plot / land",
-                "land",
-                "plot",
-                "lands",
-                "lands / plots",
-                "plots",
-                "plots / lands"
-            ];
-            const sub = subType?.toLowerCase().trim();
-            const type = property_type?.toLowerCase().trim();
-            console.log("Subtype processed:", type);
-            if (plotTypes.includes(sub)) {
-                navigate("/Property-Plot");
-            } else if (type === "residential") {
-                navigate("/Residential-Property");
-            } else if (type === "commercial") {
-                navigate("/Commercial-Property");
-            } else {
-                alert("Please select property type");
-            }
-        }
-
-    };
-    // update api call 
-    const handleUpdatePost = async () => {
-        console.log("Update Post Called");
-
-        // 🟢 REMOVE id from payload — API doesn’t need it in body
-        const payload = {
-            id: id,
-            phone: phone,
-            listing_type: action,
-            user_type: userType,
-            property_type: propertyTypeurl,
-            user_id: "1",
-            property_sub_type: subType,
-        };
-        console.log("Update Payload:", payload);
-        try {
-            const response = await axios.post(
-                `https://api.squarebigha.com/api/update-post-property-residential`,
-                payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                }
-            );
-
-            console.log("Update Response:", response.data);
-
-            if (response.data.status === 200) {
-                console.log("Update Success!");
-            }
-
-        } catch (error) {
-            console.log("Update Error:", error);
-        }
-    };
-
-
-
-    // console.log("Subtype:", subType);
-    // console.log("Options:", getSubTypeOptions);
 
     return (
         <div className="main-layout">
@@ -249,9 +158,8 @@ const PostProperty = () => {
                                     key={index}
                                     className="progress-step-vertical"
 
-                                    style={{ cursor: "pointer" }}
                                 >
-                                    <div onClick={(link) => handleupdate(s.link)}>
+                                    <div >
                                         <div className="flexadd">
                                             <div className={`circle-icon ${index <= step ? "active" : ""}`}>
                                                 <FontAwesomeIcon icon={s.icon} />
@@ -310,18 +218,16 @@ const PostProperty = () => {
                         {/* Property Type */}
                         <label>Property Type:</label>
                         <div className="btn-group property-type">
-                            {Array.isArray(types) &&
-                                types
-                                    .filter((v) => v.status === "1")
-                                    .map((v, k) => (
-                                        <button
-                                            key={k}
-                                            className={v.type_name === propertyTypeurl ? "active" : ""}
-                                            onClick={() => handlePropertyType(v.id, v.type_name)}
-                                        >
-                                            {v.type_name}
-                                        </button>
-                                    ))}
+                            {
+                                propertylist.filter((status) => status.status == "1").map((v, k) => (
+                                    <button
+                                        key={k}
+                                        className={v.type_name === propertyTypeurl ? "active" : ""}
+                                        onClick={() => handlePropertyType(v.id, v.type_name)}
+                                    >
+                                        {v.type_name}
+                                    </button>
+                                ))}
                         </div>
 
                         {/* Subtype */}
@@ -343,15 +249,10 @@ const PostProperty = () => {
                         )}
 
                         <div className="buttons">
-                            {
-                                isEdit ? (
-                                    <button className="continue-btn" onClick={handleUpdatePost}  >
-                                        Update
-                                    </button>) : (
-                                    <button className="continue-btn" onClick={handleNext}  >
-                                        Next
-                                    </button>)
-                            }
+
+                            <button className="continue-btn" onClick={handleNext}  >
+                                Next
+                            </button>
 
 
                         </div>

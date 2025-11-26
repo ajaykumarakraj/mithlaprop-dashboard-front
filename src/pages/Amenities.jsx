@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../component/Navbar";
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
+// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
@@ -62,7 +62,7 @@ const Amenities = () => {
         }
         localStorage.setItem("amenitiesdata", JSON.stringify(amenitiesdata));
 
-        navigate("/image-upload");
+        navigate("/submit-form");
     };
 
 
@@ -78,8 +78,8 @@ const Amenities = () => {
         console.log(amenityData, "hrghfdghk")
 
         getamenities()
-        dispatch(fetchPropertyTypes())
-    }, [dispatch])
+        // dispatch(fetchPropertyTypes())
+    }, [])
     // get api Property Type:
 
     // amenities 

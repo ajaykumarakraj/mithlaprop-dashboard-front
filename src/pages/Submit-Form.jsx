@@ -17,7 +17,7 @@ import Navbar from "../component/Navbar";
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
-const Imageupload = () => {
+const SubmitForm = () => {
     const navigate = useNavigate();
 
 
@@ -392,4 +392,4 @@ const Imageupload = () => {
     );
 };
 
-export default Imageupload;
+export default SubmitForm;

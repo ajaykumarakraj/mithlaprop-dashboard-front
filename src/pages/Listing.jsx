@@ -41,7 +41,7 @@ const Listing = () => {
     // Edit function (for now just an alert, later you can make a form/modal)
     const handleEdit = (listing) => {
 
-        navigate(`/postproperty/${listing.id}/${listing.property_type}`);
+        navigate(`/update-postproperty/${listing.id}/${listing.property_type}`);
 
 
     };

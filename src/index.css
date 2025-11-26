@@ -215,6 +215,18 @@ select {
     margin-bottom: 5px;
     transition: all 0.3s ease;
 }
+.circle-icon-edit {
+    width: 36px;
+    height: 36px;
+   
+    border-radius: 50%;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
 
 .circle-icon.active {
     background-color: #855305;
