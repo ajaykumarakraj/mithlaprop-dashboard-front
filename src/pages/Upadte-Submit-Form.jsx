@@ -26,37 +26,11 @@ const UpdateSubmitForm = () => {
     const { id, property_type } = useParams();
 
     const [step, setStep] = useState(3);
-    const [apiMedia, setApiMedia] = useState([]);
+    const [deleteIds, setDeleteIds] = useState([]);
 
 
     const [previews, setPreviews] = useState([]);
     const [files, setFiles] = useState([]);
-
-
-    const handleImageChange = (e) => {
-        const selectedFiles = Array.from(e.target.files);
-
-        const validFiles = selectedFiles.filter(file => file.type.startsWith("image/"));
-
-        setFiles(prev => [...prev, ...validFiles]);
-
-        const previewURLs = validFiles.map(file => URL.createObjectURL(file));
-        setPreviews(prev => [...prev, ...previewURLs]);
-    };
-
-
-    const handleRemoveImage = (index) => {
-        // 1. Remove from previews
-        setPreviews((prev) => prev.filter((_, i) => i !== index));
-
-        // 2. Remove from local uploaded files
-        setFiles((prev) => prev.filter((_, i) => i !== index));
-
-        // 3. Remove from API media if needed
-        setApiMedia((prev) => prev.filter((_, i) => i !== index));
-    };
-
-
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
         { label: "Properety Profile", icon: faBed, link: "profile", edit: faEdit },
@@ -107,7 +81,55 @@ const UpdateSubmitForm = () => {
         }
     };
 
-   
+
+
+
+    const handleImageChange = (e) => {
+        const selectedFiles = Array.from(e.target.files);
+
+        const validFiles = selectedFiles.filter(file => file.type.startsWith("image/"));
+
+        setFiles(prev => [...prev, ...validFiles]);
+
+        const previewURLs = validFiles.map(file => URL.createObjectURL(file));
+        setPreviews(prev => [...prev, ...previewURLs]);
+    };
+
+
+    const handleRemoveImage = async (id, index) => {
+        console.log("Remove Image Called for index:", index);
+        console.log("Server Image ID:", id);
+        if (property_type === "residential") {
+
+        }
+        // 🟦 If server image (id exists) → call API
+        if (id) {
+            try {
+                const res = await axios.get(
+                    `https://api.squarebigha.com/api/delete-image/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
+                        }
+                    }
+                );
+                console.log("Delete Image Response:", res.data);
+            } catch (error) {
+                console.log("Delete Image Error:", error);
+            }
+        }
+
+        // 🟩 Remove preview from UI
+        setPreviews((prev) => prev.filter((_, i) => i !== index));
+
+        // 🟩 Remove from local uploaded files (only if local file)
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+
+        // 🟩 Remove from server deleteIds list
+        setDeleteIds((prev) => prev.filter((item, i) => i !== index));
+    };
+
+
 
     useEffect(() => {
         if (!id || !property_type) return;
@@ -125,6 +147,7 @@ const UpdateSubmitForm = () => {
                 if (response.data.status === 200) {
                     const list = response.data.data.media;
                     console.log("Api Edit Data:", list);
+                    setDeleteIds(list);
                     setPreviews(list.map(
                         (item) => `https://api.squarebigha.com/${item.file_url}`
                     ));
@@ -141,37 +164,81 @@ const UpdateSubmitForm = () => {
 
     // update api call 
     const handleUpdatePost = async () => {
-        console.log("Update Post Called");
+        if (property_type == "residential") {
+            // 🟢 REMOVE id from payload — API doesn’t need it in body
+            const formData = new FormData();
 
-        // 🟢 REMOVE id from payload — API doesn’t need it in body
-        const payload = {
-            user_id: "1",
-            id: id,
+            formData.append("user_id", "1");
+            formData.append("id", id);//property id
 
-        };
-        console.log("Update Payload:", payload);
-        try {
-            const response = await axios.post(
-                `https://api.squarebigha.com/api/update-image-residential`,
-                payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                }
-            );
-
-            console.log("Update Response:", response.data);
-
-            if (response.data.status === 200) {
-                console.log("Update Success!");
+            // Append all selected files as images[]
+            files.forEach((file) => {
+                formData.append("images[]", file);
+            });
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
             }
+            try {
+                const response = await axios.post(
+                    `https://api.squarebigha.com/api/update-image-residential`,
+                    formData,
+                    {
+                        headers: {
 
-        } catch (error) {
-            console.log("Update Error:", error);
+                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
+                        }
+                    }
+                );
+
+                console.log("Update Response:", response.data);
+
+                if (response.data.status === 200) {
+                    console.log("Update Success!");
+                }
+
+            } catch (error) {
+                console.log("Update Error:", error);
+            }
+        } else if (property_type == "commercial") {
+
+            const formData = new FormData();
+
+            formData.append("user_id", "1");
+            formData.append("id", id);//property id
+
+            // Append all selected files as images[]
+            files.forEach((file) => {
+                formData.append("images[]", file);
+            });
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+            try {
+                const response = await axios.post(
+                    `https://api.squarebigha.com/api/update-image-commercial`,
+                    formData,
+                    {
+                        headers: {
+
+                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
+                        }
+                    }
+                );
+
+                console.log("Update Response:", response.data);
+
+                if (response.data.status === 200) {
+                    console.log("Update Success!");
+                }
+
+            } catch (error) {
+                console.log("Update Error:", error);
+            }
         }
-    };
+    }
+
+
+    console.log(deleteIds, "preview image");
 
     return (
         <div className="main-layout">
@@ -238,29 +305,36 @@ const UpdateSubmitForm = () => {
                                 <div className="image-preview">
                                     <h4>All Uploaded Images:</h4>
                                     <div className="preview-grid">
-                                        {previews.map((src, index) => (
-                                            <div key={index} className="preview-item">
-                                                <img
+                                        {previews.map((src, index) => {
+                                            const serverImage = deleteIds[index]; // if exists → server image
 
-                                                    src={src}
-                                                    alt={`Preview ${index}`}
-                                                    className="preview-image"
-                                                />
-                                                <button
-                                                    className="remove-btn"
-                                                    onClick={() => handleRemoveImage(index)}
-                                                >
-                                                    ✕
-                                                </button>
-                                            </div>
-                                        ))}
+                                            return (
+                                                <div key={index} className="preview-item">
+                                                    <img
+                                                        src={src}
+                                                        alt={`Preview ${index}`}
+                                                        className="preview-image"
+                                                    />
+
+                                                    <button
+                                                        className="remove-btn"
+                                                        onClick={() =>
+                                                            handleRemoveImage(serverImage?.id, index)
+                                                        }
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
 
-                            <button className="upload-btn" disabled={!previews.length}>
+
+                            {/* <button className="upload-btn" disabled={!previews.length}>
                                 Upload Images
-                            </button>
+                            </button> */}
                         </div>
 
 

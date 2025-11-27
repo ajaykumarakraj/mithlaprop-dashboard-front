@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
 import lock from "../assets/image/lock.png";
-import otpimg from "../assets/image/password.png";
 import "../assets/css/listing.css";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser, verifyOtp, closeOtpPopup, resetRedirect } from "../Redux/slices/AuthSlice";
@@ -11,8 +10,9 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [userType, setUserType] = useState("owner");
     const [mobile, setPhone] = useState("");
-
+    const [name, setName] = useState("");
     const [otp, setOtp] = useState("");
 
     const { otpPopup, loading, error, message, redirect } = useSelector((state) => state.auth);
@@ -20,10 +20,10 @@ const Login = () => {
     // ✅ Redirect after OTP success
     useEffect(() => {
         if (redirect) {
-            navigate("/postproperty", { state: { mobile } });
+            navigate("/postproperty", { state: { userType, mobile, name } });
             dispatch(resetRedirect());
         }
-    }, [redirect, navigate, dispatch, mobile]);
+    }, [redirect, navigate, dispatch, userType, mobile]);
 
     // 🔹 Send OTP
     const handleContinue = () => {
@@ -54,57 +54,50 @@ const Login = () => {
                 <h1>100% Free Listing on India’s #1 Real Estate Platform</h1>
             </div>
 
-
-            {otpPopup ? (<div className="listing-right">
-                <div className="">
-                    <h3>Verify OTP</h3>
-                    <img src={otpimg} alt="City" style={{ width: "70%", marginTop: "10px", borderRadius: "8px" }} />
-                    <input
-                        type="text"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter OTP"
-                        maxLength="4"
-                    />
-                    <div className="continue-btn" onClick={handleOtpVerify} disabled={loading}>
-
-                        {loading ? "Verifying..." : "Verify"}
-
-                        {/* <button onClick={() => dispatch(closeOtpPopup())}>Cancel</button> */}
-                    </div>
-                    <p className="mt-2 text-danger">Resend OTP</p>
-                    {message && <p style={{ color: "green" }}>{message}</p>}
-                    {error && <p style={{ color: "red" }}>{error}</p>}
-
-                </div>
-            </div>) : (
-                <div className="listing-right">
-                    <h2>Let’s get you started</h2>
-                    <img src={lock} alt="City" style={{ width: "70%", marginTop: "10px", borderRadius: "8px" }} />
-                    <input
-                        type="tel"
-                        placeholder="Enter Mobile Number"
-                        maxLength="10"
-                        value={mobile}
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
-                    <button className="continue-btn" onClick={handleContinue} disabled={loading}>
-                        {loading ? "Please wait..." : "Continue"}
-                    </button>
-                    <p>Don’t Have an Account Yet? <span>Register Here.</span></p>
-                    {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
-                    {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-                </div>
-
-            )
-            }
-
-
             {/* Right Section */}
+            <div className="listing-right">
+                <h2>Let’s get you started</h2>
 
+                {/* User Type */}
+                {/* <label>You are:</label>
+                <div className="btn-group user-type">
+                    <button className={userType === "owner" ? "active" : ""} onClick={() => setUserType("owner")}>
+                        Owner
+                    </button>
+                    <button className={userType === "agent" ? "active" : ""} onClick={() => setUserType("agent")}>
+                        Agent
+                    </button>
+                </div> */}
+                <img src={lock} alt="City" style={{ width: "70%", marginTop: "10px", borderRadius: "8px" }} />
+                {/* Phone */}
+                {/* <label>Your contact number:</label> */}
+                <input
+                    type="tel"
+                    placeholder="Enter Mobile Number"
+                    maxLength="10"
+                    value={mobile}
+                    onChange={(e) => setPhone(e.target.value)}
+                />
+
+                {/* City */}
+                {/* <label>Property city:</label>
+                <input
+                    type="text"
+                    placeholder="Please Enter Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                /> */}
+
+                <button className="continue-btn" onClick={handleContinue} disabled={loading}>
+                    {loading ? "Please wait..." : "Continue"}
+                </button>
+                <p>Don’t Have an Account Yet? <span>Register Here.</span></p>
+                {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
+                {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+            </div>
 
             {/* OTP Popup */}
-            {/* {otpPopup && (
+            {otpPopup && (
                 <div className="popup-overlay">
                     <div className="popup-box">
                         <h3>Verify OTP</h3>
@@ -125,7 +118,7 @@ const Login = () => {
                         {error && <p style={{ color: "red" }}>{error}</p>}
                     </div>
                 </div>
-            )} */}
+            )}
         </div>
     );
 };

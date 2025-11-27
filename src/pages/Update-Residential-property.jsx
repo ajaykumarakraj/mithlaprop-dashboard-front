@@ -1,4 +1,4 @@
-// src/components/PostProperty.js
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -11,25 +11,14 @@ import {
     faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
-
 import Navbar from "../component/Navbar";
-
-// import { useDispatch } from "react-redux";
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
-// import "../assets/css/PostProperty.css";
-
 const UpdateResidentialproperty = () => {
     const { id, property_type } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-
-    // const { types, loading, error } = useSelector((state) => state.property.propertyType);
-
     const [step, setStep] = useState(1);
-
     const [cityName, setCityName] = useState("");
-    // const [subLocality, setSubLocality] = useState("");
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
     const [bhk, setBhk] = useState("");
@@ -39,20 +28,12 @@ const UpdateResidentialproperty = () => {
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
-    // const [unit, setUnit] = useState("1");
     const [constructionby, setConstructionby] = useState("")
     const [ownership, setOwnership] = useState("");
     const [propertyage, setPropertyAge] = useState("");
-
     const [otherroom, setOtherroom] = useState([]);
-
     const [construction, setConstruction] = useState("");
-
     const [furnishing, setFurnishing] = useState("");
-
-
-
-    // const isEdit = id && property_type ? true : false;
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
         { label: "Properety Profile", icon: faBed, link: "profile", edit: faEdit },
@@ -77,9 +58,6 @@ const UpdateResidentialproperty = () => {
     const Balconies = ["1", "2", "3", "4+"]
     const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
     const handleupdate = (link) => {
-
-        // console.log("PARAMS:", id, property_type);
-        // console.log("selected:", subType);
 
         if (link === "post-property") {
             return navigate(`/update-postproperty/${id}/${property_type}`);
@@ -121,8 +99,6 @@ const UpdateResidentialproperty = () => {
             alert("Please select property type");
         }
     };
-
-
 
     useEffect(() => {
         if (!id || !property_type) return;
@@ -166,13 +142,10 @@ const UpdateResidentialproperty = () => {
         getData();
     }, [id, property_type]);
 
-
-
     // update api call 
     const handleUpdatePost = async () => {
         console.log("Update Post Called");
 
-        // 🟢 REMOVE id from payload — API doesn’t need it in body
         const payload = {
             user_id: "1",
             id: id,
@@ -501,13 +474,7 @@ const UpdateResidentialproperty = () => {
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
 
-                                    {/* <label>Sub Locality (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={subLocality}
-                                        placeholder="Enter Sub Locality "
-                                        onChange={(e) => setSubLocality(e.target.value)}
-                                    /> */}
+
                                     <label>Apartment/Society</label>
                                     <input
                                         type="text"

@@ -19,17 +19,10 @@ import axios from "axios";
 
 const SubmitForm = () => {
     const navigate = useNavigate();
-
-
-
     const [step, setStep] = useState(3);
     const [apiMedia, setApiMedia] = useState([]);
-
-
     const [previews, setPreviews] = useState([]);
     const [files, setFiles] = useState([]);
-
-
     const handleImageChange = (e) => {
         const selectedFiles = Array.from(e.target.files);
 
@@ -153,7 +146,7 @@ const SubmitForm = () => {
             for (let pair of formData.entries()) {
                 console.log(pair[0] + ": ", pair[1]);
             }
-
+            console.log(formData, "formdata");
             try {
 
                 const response = await axios.post(

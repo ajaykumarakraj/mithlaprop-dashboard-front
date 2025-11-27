@@ -4,7 +4,7 @@ body {
 
 .listing-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     background: #2e4154;
     color: white;
@@ -88,6 +88,7 @@ label {
     background: #fff;
     color: #000;
     padding: 25px;
+    text-align: center;
     border-radius: 15px;
     width: 350px;
 }
