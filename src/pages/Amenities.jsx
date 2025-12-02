@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../component/Navbar";
 
 import { useDispatch, useSelector } from "react-redux";
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
+import api from "../component/Baseurl"
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
 
@@ -48,8 +48,6 @@ const Amenities = () => {
     ;
     const data = JSON.parse(localStorage.getItem("userData"));
 
-
-    // localStorage.removeItem("userData");
     console.log(data, "url");
 
 
@@ -80,22 +78,14 @@ const Amenities = () => {
         getamenities()
         // dispatch(fetchPropertyTypes())
     }, [])
-    // get api Property Type:
 
-    // amenities 
 
     const getamenities = async () => {
 
         try {
 
 
-            const res = await axios.get(`https://api.squarebigha.com/api/get-aminity`, {
-
-                headers: {
-                    Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g` // ⬅️ shortened for display
-                },
-
-            })
+            const res = await api.get(`/api/get-aminity`)
             if (res.data.status == 200) {
                 // console.log("response", res.data.data)
                 setGetAmenities(res.data.data)
@@ -108,13 +98,10 @@ const Amenities = () => {
 
     }
 
-    // if (loading) return <div>Loading property types...</div>;
-    // if (error) return <div>Error: {error.toString()}</div>;
-    // console.log("get data", types)
 
 
 
-    console.log(GetAmenities)
+    // console.log(GetAmenities)
 
     return (
         <div className="main-layout">

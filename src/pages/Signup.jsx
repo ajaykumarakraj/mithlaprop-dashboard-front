@@ -4,19 +4,20 @@ import logo from "../assets/image/logo.png";
 import lock from "../assets/image/lock.png";
 import "../assets/css/listing.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, verifyOtp } from "../Redux/slices/LoginSlice";
+import { signupUser, verifyOtp } from "../Redux/slices/AuthSlice";
 
 
-const Login = () => {
+const Signup = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-
+    const [city, setCity] = useState("");
+    const [userType, setUserType] = useState("owner");
     const [phone, setPhone] = useState("");
-
+    const [name, setName] = useState("");
     const [otp, setOtp] = useState("");
 
-    const { loading, error, message, otpSent } = useSelector((state) => state.authlogin);
+    const { loading, error, message, otpSent } = useSelector((state) => state.auth);
 
     // 🔹 Send OTP
     const handleContinue = () => {
@@ -24,7 +25,7 @@ const Login = () => {
             alert("Please enter a valid 10-digit phone number.");
             return;
         }
-        dispatch(loginUser({ phone }));
+        dispatch(signupUser({ phone, name, city, userType }));
     };
 
     // 🔹 Verify OTP
@@ -35,9 +36,12 @@ const Login = () => {
         }
 
         dispatch(verifyOtp({
-            type: "login",
+            type: "signup",
             phone,
             otp,
+            user_type: userType,
+            name,
+            city
         }))
             .unwrap()
             .then(() => {
@@ -66,6 +70,27 @@ const Login = () => {
                         <h2>Let’s get you started</h2>
                         <img src={lock} alt="City" style={{ width: "70%", marginTop: "10px", borderRadius: "8px" }} />
 
+                        <div className="btn-group user-type">
+                            <button
+                                className={userType === "owner" ? "active" : ""}
+                                onClick={() => setUserType("owner")}
+                            >
+                                Owner
+                            </button>
+                            <button
+                                className={userType === "agent" ? "active" : ""}
+                                onClick={() => setUserType("agent")}
+                            >
+                                Agent
+                            </button>
+                        </div>
+
+                        <input
+                            type="text"
+                            placeholder="Please Enter Your Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
 
                         <input
                             type="tel"
@@ -75,14 +100,20 @@ const Login = () => {
                             onChange={(e) => setPhone(e.target.value)}
                         />
 
+                        <input
+                            type="text"
+                            placeholder="Please Enter Your City"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                        />
 
                         <div className="popup-actions">
                             <button onClick={handleContinue} disabled={loading}>
                                 {loading ? "Sending..." : "Continue"}
                             </button>
                         </div>
+                        <p> Already Have an Account? <Link to="/"> Login Here.</Link></p>
 
-                        <p>Don’t Have an Account Yet? <Link to="/sign-up">Register Here.</Link></p>
                         {message && <p style={{ color: "green" }}>{message}</p>}
                         {error && <p style={{ color: "red" }}>{error}</p>}
                     </>
@@ -119,4 +150,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Signup;

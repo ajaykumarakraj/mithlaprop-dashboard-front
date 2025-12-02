@@ -97,7 +97,7 @@ const PropertyPlot = () => {
     // Api  start
     useEffect(() => {
         const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
-        // setBhk(Profile.bhk || "");
+
         setFloors(Profile.Floors || "")
         setPlotno(Profile.plotno || "")
         setPossession(Profile.possession_by || "Within 3 Months")
@@ -107,14 +107,13 @@ const PropertyPlot = () => {
         setPrice(Profile.price || "");
         setConstruction(Profile.construction || "");
         setOwnership(Profile.ownership || "");
-        // setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
+
         setFurnishing(Profile.furnishing || "");
         setCityName(Profile.cityName || "");
         setLocality(Profile.locality || "");
-        // setSubLocality(Profile.subLocality || "");
+
         setApartment(Profile.apartment || "");
 
-        // dispatch(fetchPropertyTypes());
     }, []);
 
     // get api Property Type:
@@ -331,7 +330,7 @@ const PropertyPlot = () => {
                                         placeholder="Enter Sub Locality "
                                         onChange={(e) => setSubLocality(e.target.value)}
                                     /> */}
-                                    <label>Apartment/Society</label>
+                                    <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"
                                         value={apartment}

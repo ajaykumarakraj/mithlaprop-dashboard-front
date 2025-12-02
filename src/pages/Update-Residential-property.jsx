@@ -2,6 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import api from "../component/Baseurl"
 import {
     faHome,
     faMapMarkerAlt,
@@ -15,7 +16,7 @@ import Navbar from "../component/Navbar";
 import axios from "axios";
 const UpdateResidentialproperty = () => {
     const { id, property_type } = useParams();
-    const location = useLocation();
+
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [cityName, setCityName] = useState("");
@@ -41,6 +42,9 @@ const UpdateResidentialproperty = () => {
         { label: "Photos", icon: faImage, link: "submit-form", edit: faEdit },
 
     ];
+
+
+    const userid = JSON.parse(localStorage.getItem("user"))
     const toggleOption = (option) => {
         if (otherroom.includes(option)) {
             setOtherroom(otherroom.filter((item) => item !== option));
@@ -55,7 +59,7 @@ const UpdateResidentialproperty = () => {
     const Otherroom = ["Pooja Room", "Study Room", "Servant Room", "Store Room"]
     const bedroomno = ["1", "2", "3", "4+"]
     const BathRooms = ["1", "2", "3", "4+"]
-    const Balconies = ["1", "2", "3", "4+"]
+    const Balconies = ["N/A", "1", "2", "3", "4+"]
     const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
     const handleupdate = (link) => {
 
@@ -105,14 +109,7 @@ const UpdateResidentialproperty = () => {
 
         const getData = async () => {
             try {
-                const response = await axios.get(
-                    `https://api.squarebigha.com/api/edit-property/${id}/${property_type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
-                );
+                const response = await api.get(`/api/edit-property/${id}/${property_type}`,);
                 if (response.data.status === 200) {
                     const list = response.data.data;
                     console.log("Api Edit Data:", list);
@@ -144,10 +141,10 @@ const UpdateResidentialproperty = () => {
 
     // update api call 
     const handleUpdatePost = async () => {
-        console.log("Update Post Called");
+        console.log("user id", userid.user_id)
 
         const payload = {
-            user_id: "1",
+            user_id: userid.user_id,
             id: id,
             bhk_type: bhk,
             bedrooms: bedroom,
@@ -168,15 +165,10 @@ const UpdateResidentialproperty = () => {
         };
         console.log("Update Payload:", payload);
         try {
-            const response = await axios.post(
-                `https://api.squarebigha.com/api/update-post-property-residential`,
+            const response = await api.post(
+                `/api/update-property-info-residential`,
                 payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                }
+
             );
 
             console.log("Update Response:", response.data);
@@ -430,7 +422,7 @@ const UpdateResidentialproperty = () => {
                                         ))}
                                     </div>
 
-                                    <h4 className="mt-3">Other Room</h4>
+                                    <h4 className="mt-3">Other Room (Optional)</h4>
 
                                     <div className="btn-group sub-options">
                                         {Otherroom.map((option) => (
@@ -475,7 +467,7 @@ const UpdateResidentialproperty = () => {
                                     />
 
 
-                                    <label>Apartment/Society</label>
+                                    <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"
                                         value={apartment}

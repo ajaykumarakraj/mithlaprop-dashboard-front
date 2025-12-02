@@ -2,6 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import api from "../component/Baseurl"
 import {
     faHome,
     faMapMarkerAlt,
@@ -13,17 +14,12 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-// import { useDispatch } from "react-redux";
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
-// import "../assets/css/PostProperty.css";
 
 const Residentialproperty = () => {
-    // const { id, property_type } = useParams();
+
     const location = useLocation();
     const navigate = useNavigate();
-
-    // const { types, loading, error } = useSelector((state) => state.property.propertyType);
 
     const [step, setStep] = useState(1);
 
@@ -38,7 +34,6 @@ const Residentialproperty = () => {
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
-    // const [unit, setUnit] = useState("1");
     const [constructionby, setConstructionby] = useState("")
     const [ownership, setOwnership] = useState("");
     const [propertyage, setPropertyAge] = useState("");
@@ -51,6 +46,7 @@ const Residentialproperty = () => {
 
 
 
+    const [errors, setErrors] = useState({});
 
     const steps = [
         { label: "Basic Details", icon: faHome, },
@@ -73,42 +69,38 @@ const Residentialproperty = () => {
     const Otherroom = ["Pooja Room", "Study Room", "Servant Room", "Store Room"]
     const bedroomno = ["1", "2", "3", "4+"]
     const BathRooms = ["1", "2", "3", "4+"]
-    const Balconies = ["1", "2", "3", "4+"]
+    const Balconies = ["N/A", "1", "2", "3", "4+"]
     const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
-    // const handleupdate = (link) => {
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!bhk) newErrors.bhk = "Please select Your Apartment ";
+        if (!area || area <= 0)
+            newErrors.area = "Please enter a valid built up area";
+        if (!price || price <= 0)
+            newErrors.price = "Please enter property price";
+        if (!construction) newErrors.construction = "Please select Availability status";
+        if (!ownership) newErrors.ownership = "Please select ownership";
+        if (!cityName) newErrors.cityName = "Please enter city";
 
 
 
-    // if (link === "post-property") {
-    //     navigate(`/postproperty/${id}/${property_type}`);
-    // } else if (link === "profile") {
-    //     const plotTypes = [
-    //         "plot / land",
-    //         "land",
-    //         "plot",
-    //         "lands",
-    //         "lands / plots",
-    //         "plots",
-    //         "plots / lands"
-    //     ];
-    //     const sub = subType?.toLowerCase().trim();
-    //     const type = property_type?.toLowerCase().trim();
-    //     console.log("Subtype processed:", type);
-    //     if (plotTypes.includes(sub)) {
-    //         navigate("/Property-Plot", { state: { id, property_type } });
-    //     } else if (type === "residential") {
-    //         navigate(`/Residential-Property/${id}/${property_type}`);
-    //     } else if (type === "commercial") {
-    //         navigate("/Commercial-Property", { state: { id, property_type } });
-    //     } else {
-    //         alert("Please select property type");
-    //     }
-    // }
+        if (!locality) newErrors.locality = "Please enter locality";
 
-    // };
-    // const property_type = location.state.property_type
-    // const id = location.state.id
+
+        if (!furnishing) newErrors.furnishing = "Please select furnishing";
+
+
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = () => {
+        if (!validateForm()) {
+            return;  // ❌ Form invalid → Stop
+        }
         const profileData = {
             bhk,
             bedroom,
@@ -129,7 +121,7 @@ const Residentialproperty = () => {
         };
         localStorage.setItem("propertyProfile", JSON.stringify(profileData));
         localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
-        console.log("url savr", location.pathname,)
+        // console.log("url savr", location.pathname,)
         navigate("/amenities");
 
     }
@@ -140,7 +132,7 @@ const Residentialproperty = () => {
         setBhk(Profile.bhk || "");
         setBedroom(Profile.bedroom || "1");
         setBathRooms(Profile.bathroom || "1");
-        setBalconies(Profile.balconies || "1");
+        setBalconies(Profile.balconies || "N/A");
         setArea(Profile.area || "");
         setAreaUnit(Profile.AreaUnit || "sq.ft.");
         setPrice(Profile.price || "");
@@ -204,8 +196,12 @@ const Residentialproperty = () => {
                                     >
                                         {option}
                                     </button>
+
                                 ))}
+
+
                             </div>
+                            {errors.bhk && <p className="text-danger">{errors.bhk}</p>}
                             <h4 className="mt-3">Add Room Details</h4>
                             <label>No. of BedRooms</label>
                             <div className="btn-group sub-options">
@@ -256,6 +252,7 @@ const Residentialproperty = () => {
                                             value={area}
                                             onChange={(e) => setArea(e.target.value)}
                                         />
+                                        {errors.area && <p className="text-danger">{errors.area}</p>}
                                     </div>
                                     <div className="col-md-6">
                                         <label>Select Area Unit</label>
@@ -283,6 +280,7 @@ const Residentialproperty = () => {
                                                 <option value="kanal">kanal</option>
                                                 <option value="cents">cents</option>
                                             </select>
+
                                         </div>
                                     </div>
                                     <h4 className="mt-3">Add Price Details</h4>
@@ -295,6 +293,7 @@ const Residentialproperty = () => {
                                             value={price}
                                             onChange={(e) => setPrice(e.target.value)}
                                         />
+                                        {errors.price && <p className="text-danger">{errors.price}</p>}
                                     </div>
                                     <div className="col-md-6">
                                         <label>Per Unit</label>
@@ -328,11 +327,11 @@ const Residentialproperty = () => {
 
 
                                     </div>
-
+                                    {errors.construction && <p className="text-danger">{errors.construction}</p>}
                                     {construction === "ready to move" && (
 
                                         <div>
-                                            <label>Age Of Property</label>
+                                            <label>Age Of Property (Optional)</label>
                                             <div className="btn-group sub-options">
 
                                                 {PropertyAge.map((option) => (
@@ -352,7 +351,7 @@ const Residentialproperty = () => {
 
                                     {construction === "under construction" && (
                                         <div>
-                                            <label>Possession By</label>
+                                            <label>Possession By (Optional)</label>
                                             <div className="input-wrapper col-md-6">
                                                 <select
                                                     value={constructionby}
@@ -386,10 +385,11 @@ const Residentialproperty = () => {
                                             >
                                                 {option}
                                             </button>
+
                                         ))}
                                     </div>
-
-                                    <h4 className="mt-3">Other Room</h4>
+                                    {errors.ownership && <p className="text-danger">{errors.ownership}</p>}
+                                    <h4 className="mt-3">Other Room (Optional)</h4>
 
                                     <div className="btn-group sub-options">
                                         {Otherroom.map((option) => (
@@ -417,6 +417,7 @@ const Residentialproperty = () => {
                                             </button>
                                         ))}
                                     </div>
+                                    {errors.furnishing && <p className="text-danger">{errors.furnishing}</p>}
                                     <label>City</label>
                                     <input
                                         type="text"
@@ -424,6 +425,7 @@ const Residentialproperty = () => {
                                         placeholder="Enter City Name"
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
+                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
                                     <label>Locality </label>
 
                                     <input
@@ -432,15 +434,9 @@ const Residentialproperty = () => {
                                         placeholder="Enter locality"
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
+                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
 
-                                    {/* <label>Sub Locality (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={subLocality}
-                                        placeholder="Enter Sub Locality "
-                                        onChange={(e) => setSubLocality(e.target.value)}
-                                    /> */}
-                                    <label>Apartment/Society</label>
+                                    <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"
                                         value={apartment}

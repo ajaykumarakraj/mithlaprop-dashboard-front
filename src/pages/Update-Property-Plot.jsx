@@ -1,10 +1,8 @@
 
-
-
-// src/components/PostProperty.js
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import api from "../component/Baseurl"
 import {
     faHome,
     faMapMarkerAlt,
@@ -17,23 +15,21 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
-// import "../assets/css/PostProperty.css";
+
 
 const UpdatePropertyPlot = () => {
     const { id, property_type } = useParams();
 
     const navigate = useNavigate();
-    // const { types, loading, error } = useSelector(state => state.property.propertyType)
+
     const [step, setStep] = useState(1);
 
     const [cityName, setCityName] = useState("");
-    // const [subLocality, setSubLocality] = useState("");
+
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
-    // const [bhk, setBhk] = useState("");
+
 
     const [plotno, setPlotno] = useState("1");
 
@@ -41,26 +37,11 @@ const UpdatePropertyPlot = () => {
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
 
-
-    // const [AreaLenth, setAreaLenth] = useState("");
-    // const [AreaBreadth, setAreaBreadth] = useState("")
     const [Floors, setFloors] = useState("")
-    // const [Boundary, setBoundary] = useState("")
+
     const [ConstructionStatus, setConstructionStatus] = useState("")
     const [possession_by, setPossession] = useState("")
-
-
-
     const [ownership, setOwnership] = useState("");
-
-
-    // const [otherroom, setOtherroom] = useState([]);
-
-    // const [construction, setConstruction] = useState("");
-
-    // const [furnishing, setFurnishing] = useState("");
-
-
 
     const openside = ["1 ", "2", "3", "3+"]
 
@@ -73,53 +54,9 @@ const UpdatePropertyPlot = () => {
 
     ];
 
-
-    // const handleSubmit = () => {
-    //     const profileData = {
-    //         possession_by,
-    //         ConstructionStatus,
-    //         plotno,
-    //         Floors,
-    //         price,
-    //         area,
-    //         AreaUnit,
-    //         cityName,
-    //         locality,
-    //         apartment,
-    //         ownership,
-    //         furnishing,
-    //         construction,
-    //     };
-    //     localStorage.setItem("propertyProfile", JSON.stringify(profileData));
-    //     localStorage.setItem("userData", JSON.stringify({ url: location.pathname }));
-    //     navigate("/amenities");
-    // }
-    // Api  start
-    // useEffect(() => {
-    //     const Profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
-    //     // setBhk(Profile.bhk || "");
-    //     setFloors(Profile.Floors || "")
-    //     setPlotno(Profile.plotno || "")
-    //     setPossession(Profile.possession_by || "Within 3 Months")
-    //     setConstructionStatus(Profile.ConstructionStatus || "")
-    //     setArea(Profile.area || "");
-    //     setAreaUnit(Profile.AreaUnit || "sq.ft.");
-    //     setPrice(Profile.price || "");
-    //     setConstruction(Profile.construction || "");
-    //     setOwnership(Profile.ownership || "");
-    //     // setOtherroom(Array.isArray(Profile.otherroom) ? Profile.otherroom : []);
-    //     setFurnishing(Profile.furnishing || "");
-    //     setCityName(Profile.cityName || "");
-    //     setLocality(Profile.locality || "");
-    //     // setSubLocality(Profile.subLocality || "");
-    //     setApartment(Profile.apartment || "");
-
-    //     // dispatch(fetchPropertyTypes());
-    // }, []);
+    const userid = JSON.parse(localStorage.getItem("user"))
     const handleupdate = (link) => {
 
-        // console.log("PARAMS:", id, property_type);
-        // console.log("selected:", subType);
 
         if (link === "post-property") {
             return navigate(`/update-postproperty/${id}/${property_type}`);
@@ -167,13 +104,9 @@ const UpdatePropertyPlot = () => {
 
         const getData = async () => {
             try {
-                const response = await axios.get(
-                    `https://api.squarebigha.com/api/edit-property/${id}/${property_type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+                const response = await api.get(
+                    `/api/edit-property/${id}/${property_type}`,
+
                 );
                 if (response.data.status === 200) {
                     const list = response.data.data;
@@ -202,10 +135,10 @@ const UpdatePropertyPlot = () => {
     // update api call 
     const handleUpdatePost = async () => {
 
-        if (property_type === "Residential") {
+        if (property_type === "residential") {
 
             const payload = {
-                user_id: "1",
+                user_id: userid.user_id,
                 id: id,
                 area: area,
                 area_unit: AreaUnit,
@@ -222,15 +155,10 @@ const UpdatePropertyPlot = () => {
             };
             console.log("Update Payload:", payload);
             try {
-                const response = await axios.post(
-                    `https://api.squarebigha.com/api/update-property-info-residential`,
+                const response = await api.post(
+                    `/api/update-property-info-residential`,
                     payload,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+
                 );
 
                 console.log("Update Response:", response.data);
@@ -242,9 +170,9 @@ const UpdatePropertyPlot = () => {
             } catch (error) {
                 console.log("Update Error:", error);
             }
-        } else if (property_type === "Commercial") {
+        } else if (property_type === "commercial") {
             const payload = {
-                user_id: "1",
+                user_id: userid.user_id,
                 id: id,
                 area: area,
                 area_unit: AreaUnit,
@@ -261,15 +189,10 @@ const UpdatePropertyPlot = () => {
             };
             console.log("Update Payload:", payload);
             try {
-                const response = await axios.post(
-                    `https://api.squarebigha.com/api/update-property-info-commercial`,
+                const response = await api.post(
+                    `/api/update-property-info-commercial`,
                     payload,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+
                 );
 
                 console.log("Update Response:", response.data);
@@ -375,27 +298,7 @@ const UpdatePropertyPlot = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    {/* <h4 className="mt-3">Property Diamensions</h4>
-                                    <div className="col-md-6">
 
-                                        <label>Lenth of Plot</label>
-                                        <input
-                                            type="number"
-                                            placeholder={`Lenth of Plot (${AreaUnit || "sq.ft."})`}
-                                            value={AreaLenth}
-                                            onChange={(e) => setAreaLenth(e.target.value)}
-                                        />
-                                    </div> */}
-                                    {/* <div className="col-md-6">
-
-                                        <label>Breadth of Plot</label>
-                                        <input
-                                            type="number"
-                                            placeholder={`Breadth of Plot (${AreaUnit || "sq.ft."})`}
-                                            value={AreaBreadth}
-                                            onChange={(e) => setAreaBreadth(e.target.value)}
-                                        />
-                                    </div> */}
 
                                     <h4 className="mt-3">Floors Allowed For Construction</h4>
                                     <div className="col-md-6">
@@ -407,12 +310,7 @@ const UpdatePropertyPlot = () => {
                                             onChange={(e) => setFloors(e.target.value)}
                                         />
                                     </div>
-                                    {/* <h4 className="mt-3">Is there  boundary wall around the property</h4>
-                                    <div className="btn-group sub-options">
-                                        <button className={Boundary === "Yes" ? "active" : ""} onClick={() => setBoundary("Yes")}> Yes </button>
-                                        <button className={Boundary === "NO" ? "active" : ""} onClick={() => setBoundary("NO")}> NO </button>
 
-                                    </div> */}
                                     <h4 className="mt-3">Plot No.</h4>
                                     <div className="btn-group sub-options">
                                         {openside.map((option) => (
@@ -512,7 +410,7 @@ const UpdatePropertyPlot = () => {
                                         placeholder="Enter Sub Locality "
                                         onChange={(e) => setSubLocality(e.target.value)}
                                     /> */}
-                                    <label>Apartment/Society</label>
+                                    <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"
                                         value={apartment}

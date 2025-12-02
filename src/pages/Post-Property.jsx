@@ -1,6 +1,6 @@
-// src/components/PostProperty.js
-import React, { use, useEffect, useState } from "react";
 
+import React, { use, useEffect, useState } from "react";
+import api from "../component/Baseurl"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHome,
@@ -12,25 +12,25 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../component/Navbar";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice";
+
 import axios from "axios";
 
 const PostProperty = () => {
     const navigate = useNavigate();
-
-
     const [step, setStep] = useState(0);
-
-
     const [getSubTypeOptions, setGetSubTypeOptions] = useState([]);
-    const [userType, setUserType] = useState("");
+    const [userType, setUserType] = useState("agent");
     const [action, setAction] = useState("");
     const [propertylist, setPropertylist] = useState([]);
     const [propertyTypeurl, setPropertyTypeurl] = useState("");
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
 
+
+    // Error 
+    const [Suberror, setSuberror] = useState("")
+    const [Error, setError] = useState("")
+    const [Proeertyerror, setProeertyerror] = useState("")
     const steps = [
         { label: "Basic Details", icon: faHome, },
         { label: "Properety Profile", icon: faBed, },
@@ -38,24 +38,22 @@ const PostProperty = () => {
         { label: "Photos", icon: faImage, },
 
     ];
+
     // -------------------------------
     // LOCAL STORAGE LOAD
     // -------------------------------
     useEffect(() => {
-
-
         const savedSubtype = JSON.parse(localStorage.getItem("subTypeData") || "[]");
         setGetSubTypeOptions(savedSubtype);
 
         const basic = JSON.parse(localStorage.getItem("basicDetails") || "{}");
 
         setPhone(basic.phone || "");
-        setUserType(basic.userType || "");
-        setAction(basic.action || "");
-        setPropertyTypeurl(basic.propertyTypeurl || "");
+        setUserType(basic.userType || "agent");
+        setAction(basic.action || "sale");
+        setPropertyTypeurl(basic.propertyTypeurl);
         setSubType(basic.subType || "");
     }, []);
-
     // -------------------------------
     // load Property Types
     // -------------------------------
@@ -63,12 +61,7 @@ const PostProperty = () => {
 
         const getPropertyTypes = async () => {
             try {
-                const res = await axios.get("https://api.squarebigha.com/api/get-property-type", {
-                    headers: {
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                })
-                // console.log("Property Types:", res.data.data);
+                const res = await api.get("/api/get-property-type")
                 if (res.data.status === 200) {
                     setPropertylist(res.data.data);
                 }
@@ -78,9 +71,6 @@ const PostProperty = () => {
         }
         getPropertyTypes()
     }, [subType]);
-
-
-
     // -------------------------------
     // PROPERTY TYPE CLICK
     // -------------------------------
@@ -89,14 +79,7 @@ const PostProperty = () => {
 
 
         try {
-            const res = await axios.get(
-                `https://api.squarebigha.com/api/subtype-list-by-propertyid/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                }
-            );
+            const res = await api.get(`/api/subtype-list-by-propertyid/${id}`);
 
             if (res.data.status) {
                 setGetSubTypeOptions(res.data.data);
@@ -110,6 +93,21 @@ const PostProperty = () => {
     // NEXT BUTTON
     // -------------------------------
     const handleNext = () => {
+
+        if (!phone || phone.length !== 10) {
+            setError("Phone number must be 10 digits");
+            return;
+        }
+        if (!propertyTypeurl) {
+            setProeertyerror("Please select a Property Type");
+            return;
+        }
+        if (!subType) {
+            setSuberror("Please select a subtype");
+            return;
+        }
+
+
 
         const basic = {
             phone,
@@ -142,8 +140,8 @@ const PostProperty = () => {
             alert("Please select property type");
         }
     };
-
-
+    // localStorage.removeItem("user")
+    console.log(subType)
     return (
         <div className="main-layout">
             <div className="content-area">
@@ -187,24 +185,30 @@ const PostProperty = () => {
                             type="tel"
                             maxLength={10}
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^\d*$/.test(value)) {   // Only digits allowed
+                                    setPhone(value);
+                                }
+                            }}
                         />
-
+                        <label className="text-danger">{Error}</label><br />
                         {/* User Type */}
                         <label>You are:</label>
                         <div className="btn-group user-type">
-                            <button
-                                className={userType === "owner" ? "active" : ""}
-                                onClick={() => setUserType("owner")}
-                            >
-                                Owner
-                            </button>
                             <button
                                 className={userType === "agent" ? "active" : ""}
                                 onClick={() => setUserType("agent")}
                             >
                                 Agent
                             </button>
+                            <button
+                                className={userType === "owner" ? "active" : ""}
+                                onClick={() => setUserType("owner")}
+                            >
+                                Owner
+                            </button>
+
                         </div>
 
                         {/* Action */}
@@ -229,7 +233,7 @@ const PostProperty = () => {
                                     </button>
                                 ))}
                         </div>
-
+                        <label className="text-danger">{Proeertyerror}</label><br />
                         {/* Subtype */}
                         {Array.isArray(getSubTypeOptions) && getSubTypeOptions.length > 0 && (
                             <>
@@ -243,8 +247,10 @@ const PostProperty = () => {
                                         >
                                             {v.subtype_name}
                                         </button>
+
                                     ))}
                                 </div>
+                                <label className="text-danger">{Suberror}</label><br />
                             </>
                         )}
 

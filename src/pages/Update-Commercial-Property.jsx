@@ -14,7 +14,7 @@ import {
 import React, { use, useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
-
+import api from "../component/Baseurl"
 
 import axios from "axios";
 // import "../assets/css/PostProperty.css";
@@ -23,27 +23,26 @@ const UpdateCommercialProperty = () => {
     const { id, property_type, } = useParams()
     // const location = useLocation();
     const navigate = useNavigate();
-    // const { types, loading, error } = useSelector(state => state.auth.propertyType)
+
     const [step, setStep] = useState(1);
     const [lift, setLift] = useState("")
     const [cityName, setCityName] = useState("");
-    // const [subLocality, setSubLocality] = useState("");
+
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
-    // const [bhk, setBhk] = useState("");
+
     const [openparking, setOpenParking] = useState("")
     const [coveredparking, setCoveredParking] = useState("")
     const [power, setPower] = useState("")
 
     const [floor, setFloor] = useState("")
     const [tower, setTower] = useState("")
-    // const [bhkroom, setBhkroom] = useState("1");
-    // const [bathroom, setBathRooms] = useState("1");
-    const [balconies, setBalconies] = useState("1");
+
+    const [balconies_com, setBalconiescom] = useState("1");
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
-    // const [unit, setUnit] = useState("1");
+
     const [possession_by, setPossessionby] = useState("")
     const [officespace, setOfficeSpace] = useState("");
     const [propertyage, setPropertyAge] = useState("");
@@ -69,9 +68,9 @@ const UpdateCommercialProperty = () => {
     const CoveredParking = ["1 ", "2", "3", "4", "5", "6", "6+"]
     const OpenParking = ["N/A", "1", "2", "3", "4", "5", "6", "6+"]
 
-    const Balconies = ["Connected", "individual", "Room-attached"]
+    const Balconies = ["Connected", "individual", "Room-attached", "N/A"]
     const Furnishing = ["Furnished", "Semi-Furnished", "Un-Furnished"]
-
+    const userid = JSON.parse(localStorage.getItem("user"))
     const handleupdate = (link) => {
 
         if (link === "post-property") {
@@ -122,13 +121,9 @@ const UpdateCommercialProperty = () => {
 
         const getData = async () => {
             try {
-                const response = await axios.get(
-                    `https://api.squarebigha.com/api/edit-property/${id}/${property_type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+                const response = await api.get(
+                    `/api/edit-property/${id}/${property_type}`,
+
                 );
                 if (response.data.status === 200) {
                     const list = response.data.data;
@@ -145,7 +140,7 @@ const UpdateCommercialProperty = () => {
                     setWashroom(list.personal_washroom);
                     setCoveredParking(list.covered_parking);
                     setOpenParking(list.open_parking);
-                    setBalconies(list.balcony);
+                    setBalconiescom(list.balcony);
                     setPower(list.power_backup);
                     setFloor(list.floor_number);
                     setTower(list.tower_block);
@@ -171,7 +166,7 @@ const UpdateCommercialProperty = () => {
 
         // 🟢 REMOVE id from payload — API doesn’t need it in body
         const payload = {
-            user_id:"1",
+            user_id: userid.user_id,
             id: id,
             area: area,
             area_unit: AreaUnit,
@@ -185,7 +180,7 @@ const UpdateCommercialProperty = () => {
             personal_washroom: washroom,
             covered_parking: coveredparking,
             open_parking: openparking,
-            balcony: balconies,
+            balcony: balconies_com,
             power_backup: power,
             floor_number: floor,
             tower_block: tower,
@@ -197,15 +192,10 @@ const UpdateCommercialProperty = () => {
         };
         console.log("Update Payload:", payload);
         try {
-            const response = await axios.post(
-                `https://api.squarebigha.com/api/update-property-info-commercial`,
+            const response = await api.post(
+                `/api/update-property-info-commercial`,
                 payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                    }
-                }
+
             );
 
             console.log("Update Response:", response);
@@ -465,8 +455,8 @@ const UpdateCommercialProperty = () => {
                                         {Balconies.map((option) => (
                                             <button
                                                 key={option}
-                                                className={` ${balconies === option ? "active" : ""}`}
-                                                onClick={() => setBalconies(option)}
+                                                className={` ${balconies_com === option ? "active" : ""}`}
+                                                onClick={() => setBalconiescom(option)}
                                             >
                                                 {option}
                                             </button>
@@ -542,7 +532,7 @@ const UpdateCommercialProperty = () => {
                                         placeholder="Enter Sub Locality "
                                         onChange={(e) => setSubLocality(e.target.value)}
                                     /> */}
-                                    <label>Apartment/Society</label>
+                                    <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"
                                         value={apartment}

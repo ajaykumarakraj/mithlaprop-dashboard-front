@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 import PostProperty from "./pages/Post-Property";
 import Listing from "./pages/Listing";
 
@@ -19,6 +19,8 @@ import UpdateSubmitForm from "./pages/Upadte-Submit-Form";
 import UpdateCommercialProperty from "./pages/Update-Commercial-Property";
 import UpdatePropertyPlot from "./pages/Update-Property-Plot";
 
+import Signup from "./pages/Signup";
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         {/* 🔓 Public Route */}
         <Route path="/" element={<Login />} />
         <Route path="/sign-in" element={<Login />} />
+        <Route path="/sign-up" element={<Signup />} />
         <Route path="/residential-property" element={<Residentialproperty />} />
         <Route path="/update-residential-property/:id/:property_type" element={<UpdateResidentialproperty />} />
         <Route path="/amenities" element={<Amenities />} />
@@ -38,14 +41,14 @@ function App() {
         <Route path="/submit-form" element={<SubmitForm />} />
         <Route path="/update-submit-form/:id/:property_type" element={<UpdateSubmitForm />} />
         {/* 🔒 Protected Routes */}
-        <Route
+        {/* <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/postproperty"
           element={

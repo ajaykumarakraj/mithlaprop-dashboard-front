@@ -1,49 +1,46 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// 🔹 Signup Thunk (Send OTP)
+// 🔹 SEND OTP (Signup)
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
-  async ({ mobile }, { rejectWithValue }) => {
+  async ({ phone, name, city, userType }, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "https://api.almonkdigital.in/api/send-login-otp",
-        { mobile },
-        {
-          headers: {
-            Authorization:
-              "Bearer 83|laravel_sanctum_BwhsYKTMWoJ8qJbL9Ft36vmv7zfQ58n8eq6RwfSWd7c8d5c6",
-          },
-        }
+        "https://api.squarebigha.com/api/signup",
+        { phone, name, city, userType }
       );
-      if (res.data.status === 200) return res.data;
-      return rejectWithValue(res.data.message || "Failed to send OTP");
+
+      // API success check
+      if (res.data?.status === 200 || res.data?.success === true) {
+        console.log(res.data)
+        return res.data;
+      }
+
+      return rejectWithValue(res.data?.message || "Failed to send OTP");
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Signup failed");
+      return rejectWithValue(err.response?.data?.message || "Signup failed");
     }
   }
 );
 
-// 🔹 OTP Verify Thunk
+// 🔹 VERIFY OTP
 export const verifyOtp = createAsyncThunk(
   "auth/verifyOtp",
-  async ({ mobile, otp }, { rejectWithValue }) => {
+  async ({ type, phone, otp, user_type, name, city }, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "https://api.almonkdigital.in/api/verify-login-otp",
-        { mobile, otp },
-        {
-          headers: {
-            Authorization:
-              "Bearer 83|laravel_sanctum_BwhsYKTMWoJ8qJbL9Ft36vmv7zfQ58n8eq6RwfSWd7c8d5c6",
-          },
-        }
+        "https://api.squarebigha.com/api/verify-otp",
+        { type, phone, otp, user_type, name, city }
       );
 
-      if (res.data.status === 200) return res.data;
-      return rejectWithValue(res.data.message || "Invalid OTP");
+      if (res.data?.status === 200 || res.data?.success === true) {
+        return res.data;
+      }
+
+      return rejectWithValue(res.data?.message || "Invalid OTP");
     } catch (err) {
-      return rejectWithValue(err.response?.data || "OTP verification failed");
+      return rejectWithValue(err.response?.data?.message || "OTP verification failed");
     }
   }
 );
@@ -52,58 +49,60 @@ const AuthSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    message: null,
-    otpPopup: false,
-    redirect: false,
     loading: false,
     error: null,
+    message: null,
+    redirect: false,
+    otpSent: false,
   },
   reducers: {
-    closeOtpPopup: (state) => {
-      state.otpPopup = false;
-      state.error = null;
-    },
     resetRedirect: (state) => {
       state.redirect = false;
+    },
+    clearMessage: (state) => {
+      state.message = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Signup
+
+      // 🔹 SIGNUP (Send OTP)
       .addCase(signupUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(signupUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.otpPopup = true;
-        state.message = action.payload.message || "OTP sent successfully ✅";
+        state.message = action.payload?.message || "OTP Sent Successfully";
+        state.otpSent = true;
       })
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message || "Your number is not registered";
+        state.error = action.payload || "Signup failed";
       })
-      // OTP Verify
+
+      // 🔹 VERIFY OTP
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user || null;
-        state.otpPopup = false;
-        state.message = action.payload.message || "OTP verified successfully 🎉";
+        state.user = action.payload?.user || null;
+        state.message = action.payload?.message || "OTP Verified";
         state.redirect = true;
-        if (action.payload.token) {
+        state.otpSent = false;
+
+        if (action.payload?.token) {
           localStorage.setItem("token", action.payload.token);
         }
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "OTP verification failed ❌";
+        state.error = action.payload || "Invalid OTP";
       });
   },
 });
 
-export const { closeOtpPopup, resetRedirect } = AuthSlice.actions;
+export const { resetRedirect, clearMessage } = AuthSlice.actions;
 export default AuthSlice.reducer;

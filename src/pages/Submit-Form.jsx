@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import api from "../component/Baseurl"
 import Navbar from "../component/Navbar";
 
 
@@ -23,6 +23,8 @@ const SubmitForm = () => {
     const [apiMedia, setApiMedia] = useState([]);
     const [previews, setPreviews] = useState([]);
     const [files, setFiles] = useState([]);
+    const [photoError, setPhotoError] = useState("");
+
     const handleImageChange = (e) => {
         const selectedFiles = Array.from(e.target.files);
 
@@ -81,9 +83,31 @@ const SubmitForm = () => {
 
 
     const handleSubmit = async () => {
+
+        // 🔥 PHOTO VALIDATION
+        if (files.length === 0 && apiMedia.length === 0) {
+            setPhotoError("Please upload at least one image.");
+            return;
+        }
+
+        if (files.length > 10) {
+            setPhotoError("You can upload only up to 10 images.");
+            return;
+        }
+
+        // ❌ Agar error clear ho gaya to remove message
+        setPhotoError("");
+
+        // ✔ Continue — your existing submit code
+        // ...
+
+
         const basic = JSON.parse(localStorage.getItem("basicDetails") || "{}");
         const profile = JSON.parse(localStorage.getItem("propertyProfile") || "{}");
         const amenityData = JSON.parse(localStorage.getItem("amenitiesdata") || "{}");
+        const userid = JSON.parse(localStorage.getItem("user"))
+
+        console.log(userid.user_id, "check id")
         if (basic.propertyTypeurl == "commercial") {
             const ids = Array.isArray(amenityData?.amenities)
                 ? amenityData.amenities.map(item => item.id)
@@ -93,7 +117,7 @@ const SubmitForm = () => {
             const formData = new FormData();
             // ✅ Append Text Data According To Given Keys
             // 🔹 User Info
-            formData.append("user_id", "1");
+            formData.append("user_id", userid.user_id);
             formData.append("phone", basic.phone);
             formData.append("agent_city", "");
             formData.append("user_type", basic.userType);
@@ -117,7 +141,7 @@ const SubmitForm = () => {
             formData.append("personal_washroom", profile.washroom || "");
             formData.append("covered_parking", profile.coveredparking || "");
             formData.append("open_parking", profile.openparking || "");
-            formData.append("balcony", profile.balconies || "");
+            formData.append("balcony", profile.balconies_com || "");
             formData.append("lift", profile.lift || "");
             formData.append("power_backup", profile.power || "");
             formData.append("floor_number", profile.floor || "");
@@ -149,16 +173,8 @@ const SubmitForm = () => {
             console.log(formData, "formdata");
             try {
 
-                const response = await axios.post(
-                    "https://api.squarebigha.com/api/post-property-commercial",
-
-                    formData,
-                    {
-                        headers: {
-
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+                const response = await api.post(
+                    "/api/post-property-commercial", formData
                 );
                 console.log(response.data.status)
                 console.log(response.data.error)
@@ -192,7 +208,7 @@ const SubmitForm = () => {
 
             const formData = new FormData();
             // ✅ Append Text Data According To Given Keys
-            formData.append("user_id", "1");
+            formData.append("user_id", userid.user_id);
             formData.append("phone", basic.phone || "");
             formData.append("agent_city", basic.agent_city || "");
             formData.append("user_type", basic.userType || "");
@@ -241,17 +257,7 @@ const SubmitForm = () => {
 
             try {
 
-                const response = await axios.post(
-                    "https://api.squarebigha.com/api/post-property",
-
-                    formData,
-                    {
-                        headers: {
-
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
-                );
+                const response = await api.post("/api/post-property", formData,);
                 console.log(response.data.status)
                 console.log(response.data.error)
                 if (response.data.status == 200) {
@@ -281,18 +287,7 @@ const SubmitForm = () => {
 
     };
 
-    // useEffect(() => {
-    //     const basic = JSON.parse(localStorage.getItem("basicDetails"));
-    //     const profile = JSON.parse(localStorage.getItem("propertyProfile"));
-    //     const amenityData = JSON.parse(localStorage.getItem("amenities"));
 
-    //     console.log("final data", {
-    //         ...basic,
-    //         ...profile,
-    //         amenities: amenityData,
-    //         images: previews // File array
-    //     });
-    // }, []);
 
     return (
         <div className="main-layout">
@@ -339,6 +334,9 @@ const SubmitForm = () => {
                                     <p>Click or Drag & Drop to Upload</p>
                                     <span>Accepted: .jpg, .png, .jpeg</span>
                                 </div>
+                                {photoError && (
+                                    <p style={{ color: "red", fontSize: "14px" }}>{photoError}</p>
+                                )}
                             </label>
 
                             {previews.length > 0 && (

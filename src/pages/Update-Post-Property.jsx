@@ -11,21 +11,21 @@ import {
     faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../component/Navbar";
+import api from "../component/Baseurl"
 import { useParams, useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice";
+
 import axios from "axios";
 
 const UpdatePostProperty = () => {
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
+
     const { id, property_type } = useParams();
     const [step, setStep] = useState(0);
-    // const { types } = useSelector(state => state.property.propertyType);
+
     const [getSubTypeOptions, setGetSubTypeOptions] = useState([]);
     const [userType, setUserType] = useState("");
     const [action, setAction] = useState("");
-    const [propertylist, setPropertylist] = useState([]);
+
     const [propertyTypeurl, setPropertyTypeurl] = useState("");
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
@@ -37,6 +37,7 @@ const UpdatePostProperty = () => {
         { label: "Photos", icon: faImage, link: "submit-form", edit: faEdit },
 
     ];
+    const userid = JSON.parse(localStorage.getItem("user"))
     // -------------------------------
     // LOCAL STORAGE LOAD
     // -------------------------------
@@ -80,13 +81,9 @@ const UpdatePostProperty = () => {
 
         const getData = async () => {
             try {
-                const response = await axios.get(
-                    `https://api.squarebigha.com/api/edit-property/${id}/${property_type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+                const response = await api.get(
+                    `/api/edit-property/${id}/${property_type}`,
+
                 );
                 if (response.data.status === 200) {
                     const list = response.data.data;
@@ -101,16 +98,7 @@ const UpdatePostProperty = () => {
                     setAction(list.listing_type || "");
                     setPropertyTypeurl(list.property_type || "");
                     setSubType(list.property_sub_type || "");
-                    // setPropertylist([{ type_name: list.property_type }]);
 
-                    // setSubType(list.property_sub_type || "");
-                    // // temporary single subtype until full list loads
-                    // setGetSubTypeOptions([{ subtype_name: list.property_sub_type }]);
-
-                    // // load full subtype list by ID
-                    // if (list.property_type_id) {
-                    //     handlePropertyType(list.property_type_id, list.property_type);
-                    // }
                 }
             } catch (err) {
                 console.log("Edit Error:", err);
@@ -120,28 +108,6 @@ const UpdatePostProperty = () => {
         getData();
     }, [id, property_type]);
 
-    // -------------------------------
-    // PROPERTY TYPE CLICK
-    // -------------------------------
-    // const handlePropertyType = async (id, name) => {
-    //     setPropertyTypeurl(name);
-    //     try {
-    //         const res = await axios.get(
-    //             `https://api.squarebigha.com/api/subtype-list-by-propertyid/${id}`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-    //                 }
-    //             }
-    //         );
-
-    //         if (res.data.status) {
-    //             setGetSubTypeOptions(res.data.data);
-    //         }
-    //     } catch (error) {
-    //         console.log("Subtype error:", error);
-    //     }
-    // };
 
     // -------------------------------
     // Update BUTTON
@@ -198,7 +164,7 @@ const UpdatePostProperty = () => {
         if (property_type === "residential") {
             const payload = {
                 id: id,
-                user_id: "1",
+                user_id: userid.user_id,
                 phone: phone,
                 listing_type: action,
                 user_type: userType,
@@ -208,16 +174,8 @@ const UpdatePostProperty = () => {
             };
             console.log("Update Payload:", payload);
             try {
-                const response = await axios.post(
-                    `https://api.squarebigha.com/api/update-basic-info-residential`,
-                    payload,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
-                );
+                const response = await api.post(
+                    `https://api.squarebigha.com/api/update-basic-info-residential`, payload,);
 
                 console.log("Update Response:", response.data);
 
@@ -231,7 +189,7 @@ const UpdatePostProperty = () => {
         } else if (property_type === "commercial") {
             const payload = {
                 id: id,
-                user_id: "1",
+                user_id: userid.user_id,
                 phone: phone,
                 listing_type: action,
                 user_type: userType,
@@ -241,15 +199,10 @@ const UpdatePostProperty = () => {
             };
             console.log("Update Payload:", payload);
             try {
-                const response = await axios.post(
-                    `https://api.squarebigha.com/api/update-basic-info-commercial`,
+                const response = await api.post(
+                    `/api/update-basic-info-commercial`,
                     payload,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiIzOTUzMTUxNjQyOWM1MzZiZmM1NjQyOTQ2ODNhYTYxNzc0NTgxZjRmZmU4NjE5NzNiZWQ0Mjk1OTdlYzQzZjM5NTk5ZDQ0Yjc4MjgyNWMxMyIsImlhdCI6MTc1NzQxNzk0Ni45Mjk3NzEsIm5iZiI6MTc1NzQxNzk0Ni45Mjk3NzMsImV4cCI6MTc4ODk1Mzk0Ni45MjQ1OTUsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.qL6E9AzHFXC74-XRr0-KhAao4jWisTvyeri3eUXTEFV_Hp6DTylDISB1eeDsyaStrMIfk89EjMVaClE16WbYBKGVpHSnKOaDT56ubfb7DcrHAh50BTLTTIgYyf_Gbop_pnHFkOjbFc03SgKLWHJ8PpQlShiIxtXBA2eQX5bEkYHit0eZYN0bQdjtiu8YFvhubG9OMee-r95Cc8nXRdiC3gkXw0POWjwoCev9BNFHZ8UfdgXZMjxDVo4R_fFdWTeeicFjchFxYuRb7zm1aU8OUFyc4ozNJUC6Wix4hUARjUTmIfZ5mfEq5TDQWD0AM-ERfP8tIkkoTbDqqASU2Mg6LJ4p6nUXUqAuql4sDbmRKVlB04N15xV62LHWJTgT71JfA_bgZHFJGDUQD1c53vCwqEbZUSrMMAOXF6mllBmm1baKdqiocEm9_QldIWT2U07zmYGG4PBU2N3pBmMXftZDFu-xOPBSdB7dsz9KEUeY_gLDoupX9JwgQY8aNT-lwlcb9c0tguDdLWS2cU1LY180kfF0R7QeRq5UpCyb27COT7LNu9R9sl_KMcmLnxtzhNWA-YZeS9h3sKlimso6GO3VgTevyWaVyAs4nCNxP7kAP7FdlG-ckIUEuwsFmvV5pBGu65VB8hG9n3mha-zi7oRlqm4ltkGNLVZR4pX9iBN1Z6g`
-                        }
-                    }
+
                 );
 
                 console.log("Update Response:", response.data);
@@ -268,10 +221,6 @@ const UpdatePostProperty = () => {
     };
 
 
-
-    // console.log("Subtype:", types);
-    // console.log("Options:", propertyTypeurl);
-    // console.log("PARAMS:", property_type);
     return (
         <div className="main-layout">
             <div className="content-area">
