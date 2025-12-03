@@ -35,6 +35,7 @@ const UpdateResidentialproperty = () => {
     const [otherroom, setOtherroom] = useState([]);
     const [construction, setConstruction] = useState("");
     const [furnishing, setFurnishing] = useState("");
+    const [errors, setErrors] = useState({});
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
         { label: "Properety Profile", icon: faBed, link: "profile", edit: faEdit },
@@ -138,9 +139,27 @@ const UpdateResidentialproperty = () => {
 
         getData();
     }, [id, property_type]);
+    const validateForm = () => {
+        const newErrors = {};
+        if (!area || area <= 0)
+            newErrors.area = "Please enter a valid built up area";
+        if (!price || price <= 0)
+            newErrors.price = "Please enter property price";
 
+
+
+        if (!cityName) newErrors.cityName = "Please enter city";
+        if (!locality) newErrors.locality = "Please enter locality";
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
     // update api call 
     const handleUpdatePost = async () => {
+        if (!validateForm()) {
+            return;  // ❌ Form invalid → Stop
+        }
         console.log("user id", userid.user_id)
 
         const payload = {
@@ -318,6 +337,7 @@ const UpdateResidentialproperty = () => {
                                             </select>
                                         </div>
                                     </div>
+                                    {errors.area && <p className="text-danger">{errors.area}</p>}
                                     <h4 className="mt-3">Add Price Details</h4>
                                     <div className="col-md-6">
 
@@ -337,6 +357,7 @@ const UpdateResidentialproperty = () => {
 
                                         </div>
                                     </div>
+                                    {errors.price && <p className="text-danger">{errors.price}</p>}
                                     <h4 className="mt-3">Availability Status</h4>
                                     <div className="btn-group sub-options">
                                         <button className={construction === "ready to move" ? "active" : ""} onClick={() => setConstruction("ready to move")}>
@@ -457,6 +478,7 @@ const UpdateResidentialproperty = () => {
                                         placeholder="Enter City Name"
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
+                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
                                     <label>Locality </label>
 
                                     <input
@@ -465,7 +487,7 @@ const UpdateResidentialproperty = () => {
                                         placeholder="Enter locality"
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
-
+                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
 
                                     <label>Apartment/Society (Optional)</label>
                                     <input

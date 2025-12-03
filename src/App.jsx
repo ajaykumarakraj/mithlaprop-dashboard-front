@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import Dashboard from "./pages/Dashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PostProperty from "./pages/Post-Property";
 import Listing from "./pages/Listing";
 
@@ -25,6 +27,7 @@ import Signup from "./pages/Signup";
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         {/* 🔓 Public Route */}
         <Route path="/" element={<Login />} />
@@ -83,7 +86,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+
       </Routes>
+
     </Router>
   );
 }

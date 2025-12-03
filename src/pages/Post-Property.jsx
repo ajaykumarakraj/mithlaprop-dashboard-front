@@ -141,7 +141,7 @@ const PostProperty = () => {
         }
     };
     // localStorage.removeItem("user")
-    console.log(subType)
+    // console.log(subType)
     return (
         <div className="main-layout">
             <div className="content-area">

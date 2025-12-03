@@ -31,6 +31,7 @@ const UpdateSubmitForm = () => {
 
     const [previews, setPreviews] = useState([]);
     const [files, setFiles] = useState([]);
+    const [photoError, setPhotoError] = useState("");
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
         { label: "Properety Profile", icon: faBed, link: "profile", edit: faEdit },
@@ -152,7 +153,19 @@ const UpdateSubmitForm = () => {
 
     // update api call 
     const handleUpdatePost = async () => {
+        // 🔥 PHOTO VALIDATION
+        if (files.length === 0) {
+            setPhotoError("Please upload at least one image.");
+            return;
+        }
 
+        if (files.length > 10) {
+            setPhotoError("You can upload only up to 10 images.");
+            return;
+        }
+
+        // ❌ Agar error clear ho gaya to remove message
+        setPhotoError("");
         const userid = JSON.parse(localStorage.getItem("user"))
         if (property_type == "residential") {
             // 🟢 REMOVE id from payload — API doesn’t need it in body
@@ -274,6 +287,9 @@ const UpdateSubmitForm = () => {
                                     <p>Click or Drag & Drop to Upload</p>
                                     <span>Accepted: .jpg, .png, .jpeg</span>
                                 </div>
+                                {photoError && (
+                                    <p style={{ color: "red", fontSize: "14px" }}>{photoError}</p>
+                                )}
                             </label>
 
                             {previews.length > 0 && (

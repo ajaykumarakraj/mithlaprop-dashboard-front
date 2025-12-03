@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/image/logo.png";
-import lock from "../assets/image/lock.png";
+import lock from "../assets/image/login.png";
 import "../assets/css/listing.css";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser, verifyOtp } from "../Redux/slices/AuthSlice";
@@ -12,7 +12,7 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const [city, setCity] = useState("");
-    const [userType, setUserType] = useState("owner");
+    const [userType, setUserType] = useState("agent");
     const [phone, setPhone] = useState("");
     const [name, setName] = useState("");
     const [otp, setOtp] = useState("");
@@ -68,30 +68,28 @@ const Signup = () => {
                 {!otpSent ? (
                     <>
                         <h2>Let’s get you started</h2>
-                        <img src={lock} alt="City" style={{ width: "70%", marginTop: "10px", borderRadius: "8px" }} />
+                        <img src={lock} alt="City" style={{ width: "50%", marginTop: "10px", borderRadius: "8px" }} />
 
                         <div className="btn-group user-type">
-                            <button
-                                className={userType === "owner" ? "active" : ""}
-                                onClick={() => setUserType("owner")}
-                            >
-                                Owner
-                            </button>
                             <button
                                 className={userType === "agent" ? "active" : ""}
                                 onClick={() => setUserType("agent")}
                             >
                                 Agent
                             </button>
+                            <button
+                                className={userType === "owner" ? "active" : ""}
+                                onClick={() => setUserType("owner")}
+                            >
+                                Owner
+                            </button>
                         </div>
-
                         <input
                             type="text"
                             placeholder="Please Enter Your Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-
                         <input
                             type="tel"
                             placeholder="Enter phone Your Number"

@@ -16,51 +16,41 @@ import React, { useEffect, useState } from "react";
 
 import Navbar from "../component/Navbar";
 
-
-// import { fetchPropertyTypes } from "../Redux/slices/PropertySlice"
 import axios from "axios";
-// import "../assets/css/PostProperty.css";
+
 
 const PropertyPlot = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    // const { types, loading, error } = useSelector(state => state.property.propertyType)
+
     const [step, setStep] = useState(1);
 
     const [cityName, setCityName] = useState("");
-    // const [subLocality, setSubLocality] = useState("");
+
     const [locality, setLocality] = useState("");
     const [apartment, setApartment] = useState("");
-    // const [bhk, setBhk] = useState("");
 
-    const [plotno, setPlotno] = useState("1");
+    const [plotno, setPlotno] = useState("");
 
     const [price, setPrice] = useState("");
     const [area, setArea] = useState("");
     const [AreaUnit, setAreaUnit] = useState("");
 
-
-    // const [AreaLenth, setAreaLenth] = useState("");
-    // const [AreaBreadth, setAreaBreadth] = useState("")
     const [Floors, setFloors] = useState("")
-    // const [Boundary, setBoundary] = useState("")
+
     const [ConstructionStatus, setConstructionStatus] = useState("")
     const [possession_by, setPossession] = useState("")
-
-
-
     const [ownership, setOwnership] = useState("");
-
-
-    // const [otherroom, setOtherroom] = useState([]);
-
     const [construction, setConstruction] = useState("");
 
     const [furnishing, setFurnishing] = useState("");
+
+
+    const [errors, setErrors] = useState({});
     const steps = [
         { label: "Basic Details", icon: faHome },
-        // { label: "Location  Details", icon: faMapMarkerAlt },
+
         { label: "Properety Profile", icon: faBed },
         { label: "Amenities Section", icon: faCheckCircle },
         { label: "Photos and Videos", icon: faImage },
@@ -68,13 +58,31 @@ const PropertyPlot = () => {
     ];
 
 
-    const openside = ["1 ", "2", "3", "3+"]
 
     const Ownership = ["Freehold", "Leasehold", "Co-operative society", "Power of Attorney"]
 
 
+    const validateForm = () => {
+        const newErrors = {};
+        if (!area || area <= 0)
+            newErrors.area = "Please enter a valid built up area";
+        if (!price || price <= 0)
+            newErrors.price = "Please enter property price";
+        if (!ConstructionStatus) newErrors.ConstructionStatus = "Please select Construction status";
+        if (!Floors) newErrors.Floors = "Please select Floors";
+        if (!ownership) newErrors.ownership = "Please select ownership";
+        if (!cityName) newErrors.cityName = "Please enter city";
+        if (!locality) newErrors.locality = "Please enter locality";
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleSubmit = () => {
+        if (!validateForm()) {
+            return;  // ❌ Form invalid → Stop
+        }
         const profileData = {
             possession_by,
             ConstructionStatus,
@@ -115,7 +123,7 @@ const PropertyPlot = () => {
         setApartment(Profile.apartment || "");
 
     }, []);
-
+    console.log(plotno)
     // get api Property Type:
     return (
         <div className="main-layout">
@@ -193,27 +201,9 @@ const PropertyPlot = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    {/* <h4 className="mt-3">Property Diamensions</h4>
-                                    <div className="col-md-6">
 
-                                        <label>Lenth of Plot</label>
-                                        <input
-                                            type="number"
-                                            placeholder={`Lenth of Plot (${AreaUnit || "sq.ft."})`}
-                                            value={AreaLenth}
-                                            onChange={(e) => setAreaLenth(e.target.value)}
-                                        />
-                                    </div> */}
-                                    {/* <div className="col-md-6">
+                                    {errors.area && <p className="text-danger">{errors.area}</p>}
 
-                                        <label>Breadth of Plot</label>
-                                        <input
-                                            type="number"
-                                            placeholder={`Breadth of Plot (${AreaUnit || "sq.ft."})`}
-                                            value={AreaBreadth}
-                                            onChange={(e) => setAreaBreadth(e.target.value)}
-                                        />
-                                    </div> */}
 
                                     <h4 className="mt-3">Floors Allowed For Construction</h4>
                                     <div className="col-md-6">
@@ -225,23 +215,16 @@ const PropertyPlot = () => {
                                             onChange={(e) => setFloors(e.target.value)}
                                         />
                                     </div>
-                                    {/* <h4 className="mt-3">Is there  boundary wall around the property</h4>
-                                    <div className="btn-group sub-options">
-                                        <button className={Boundary === "Yes" ? "active" : ""} onClick={() => setBoundary("Yes")}> Yes </button>
-                                        <button className={Boundary === "NO" ? "active" : ""} onClick={() => setBoundary("NO")}> NO </button>
+                                    {errors.Floors && <p className="text-danger">{errors.Floors}</p>}
+                                    <h4 className="mt-3">Plot No.  (Optional)</h4>
+                                    <div className="col-md-6">
+                                        <input
+                                            type="text"
+                                            placeholder="Plot No. "
+                                            value={plotno}
+                                            onChange={(e) => setPlotno(e.target.value)}
+                                        />
 
-                                    </div> */}
-                                    <h4 className="mt-3">Plot No.</h4>
-                                    <div className="btn-group sub-options">
-                                        {openside.map((option) => (
-                                            <button
-                                                key={option}
-                                                className={`${plotno === option ? "active" : ""}`}
-                                                onClick={() => setPlotno(option)}
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
                                     </div>
 
 
@@ -251,6 +234,7 @@ const PropertyPlot = () => {
                                         <button className={ConstructionStatus === "NO" ? "active" : ""} onClick={() => setConstructionStatus("NO")}> NO </button>
 
                                     </div>
+                                    {errors.ConstructionStatus && <p className="text-danger">{errors.ConstructionStatus}</p>}
                                     <h4 className="mt-3">Ownership</h4>
                                     <div className="btn-group sub-options">
 
@@ -264,6 +248,7 @@ const PropertyPlot = () => {
                                             </button>
                                         ))}
                                     </div>
+                                    {errors.ownership && <p className="text-danger">{errors.ownership}</p>}
                                     <h4 className="mt-3">Add Price Details</h4>
                                     <div className="col-md-6">
 
@@ -275,6 +260,7 @@ const PropertyPlot = () => {
                                             onChange={(e) => setPrice(e.target.value)}
                                         />
                                     </div>
+
                                     <div className="col-md-6">
                                         <label>Per Unit</label>
                                         <div className="input-wrapper">
@@ -283,7 +269,8 @@ const PropertyPlot = () => {
 
                                         </div>
                                     </div>
-                                    <h4 className="mt-3">Possession By</h4>
+                                    {errors.price && <p className="text-danger">{errors.price}</p>}
+                                    <h4 className="mt-3">Possession By  (Optional)</h4>
 
                                     <div className="input-wrapper col-md-6">
                                         <select
@@ -314,6 +301,7 @@ const PropertyPlot = () => {
                                         placeholder="Enter City Name"
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
+                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
                                     <label>Locality </label>
 
                                     <input
@@ -323,13 +311,7 @@ const PropertyPlot = () => {
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
 
-                                    {/* <label>Sub Locality (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={subLocality}
-                                        placeholder="Enter Sub Locality "
-                                        onChange={(e) => setSubLocality(e.target.value)}
-                                    /> */}
+                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
                                     <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"

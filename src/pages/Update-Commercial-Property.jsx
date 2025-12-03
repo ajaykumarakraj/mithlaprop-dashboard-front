@@ -52,6 +52,9 @@ const UpdateCommercialProperty = () => {
     const [possessionstatus, setPossessionStatus] = useState("");
 
     const [furnishing, setFurnishing] = useState("");
+
+    const [errors, setErrors] = useState({});
+
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
         { label: "Properety Profile", icon: faBed, link: "profile", edit: faEdit },
@@ -159,9 +162,30 @@ const UpdateCommercialProperty = () => {
     }, [id, property_type]);
 
 
+    const validateForm = () => {
+        const newErrors = {};
+        if (!area || area <= 0)
+            newErrors.area = "Please enter a valid built up area";
+        if (!price || price <= 0)
+            newErrors.price = "Please enter property price";
+        //  floor Status
+        if (!floor) {
+            newErrors.floor = "Enter Floor Number ";
+        }
 
+
+        if (!cityName) newErrors.cityName = "Please enter city";
+        if (!locality) newErrors.locality = "Please enter locality";
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
     // update api call 
     const handleUpdatePost = async () => {
+        if (!validateForm()) {
+            return;  // ❌ Form invalid → Stop
+        }
         console.log("Update Post Called");
 
         // 🟢 REMOVE id from payload — API doesn’t need it in body
@@ -297,6 +321,7 @@ const UpdateCommercialProperty = () => {
                                             </select>
                                         </div>
                                     </div>
+                                    {errors.area && <p className="text-danger">{errors.area}</p>}
                                     <h4 className="mt-3">Add Price Details</h4>
                                     <div className="col-md-6">
 
@@ -316,6 +341,7 @@ const UpdateCommercialProperty = () => {
 
                                         </div>
                                     </div>
+                                    {errors.price && <p className="text-danger">{errors.price}</p>}
                                     <h4 className="mt-3">Possession Status</h4>
                                     <div className="btn-group sub-options">
                                         {
@@ -489,14 +515,19 @@ const UpdateCommercialProperty = () => {
                                         placeholder="Enter Floor Number"
                                         onChange={(e) => setFloor(e.target.value)}
                                     />
-                                    <h4 className="mt-3">Tower/Block</h4>
+                                    {errors.floor && (
+                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                            {errors.floor}
+                                        </p>
+                                    )}
+                                    <h4 className="mt-3">Tower/Block  (Optional)</h4>
                                     <input
                                         type="text"
                                         value={tower}
                                         placeholder="Enter Tower/Block"
                                         onChange={(e) => setTower(e.target.value)}
                                     />
-                                    <h4 className="mt-3"> Facing</h4>
+                                    <h4 className="mt-3"> Facing  (Optional)</h4>
 
                                     <select
                                         value={facing}
@@ -516,6 +547,7 @@ const UpdateCommercialProperty = () => {
                                         placeholder="Enter City Name"
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
+                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
                                     <label>Locality </label>
 
                                     <input
@@ -524,14 +556,7 @@ const UpdateCommercialProperty = () => {
                                         placeholder="Enter locality"
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
-
-                                    {/* <label>Sub Locality (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={subLocality}
-                                        placeholder="Enter Sub Locality "
-                                        onChange={(e) => setSubLocality(e.target.value)}
-                                    /> */}
+                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
                                     <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"

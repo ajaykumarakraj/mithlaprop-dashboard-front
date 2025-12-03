@@ -2,6 +2,9 @@
 import React, { use, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast } from "react-toastify";
+
+
 import {
     faHome,
     faMapMarkerAlt,
@@ -29,6 +32,11 @@ const UpdatePostProperty = () => {
     const [propertyTypeurl, setPropertyTypeurl] = useState("");
     const [subType, setSubType] = useState("");
     const [phone, setPhone] = useState("");
+
+    // Error 
+    const [Suberror, setSuberror] = useState("")
+    const [Error, setError] = useState("")
+    const [Proeertyerror, setProeertyerror] = useState("")
     const isEdit = id && property_type ? true : false;
     const steps = [
         { label: "Basic Details", icon: faHome, link: "post-property", edit: faEdit },
@@ -161,6 +169,14 @@ const UpdatePostProperty = () => {
 
     // update api call 
     const handleUpdatePost = async () => {
+
+        if (!phone || phone.length !== 10) {
+            setError("Phone number must be 10 digits");
+            return;
+        }
+
+
+
         if (property_type === "residential") {
             const payload = {
                 id: id,
@@ -180,7 +196,14 @@ const UpdatePostProperty = () => {
                 console.log("Update Response:", response.data);
 
                 if (response.data.status === 200) {
-                    console.log("Update Success!");
+                    toast.success("Property Updated Successfully!", {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
                 }
 
             } catch (error) {
@@ -270,7 +293,7 @@ const UpdatePostProperty = () => {
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                         />
-
+                        <label className="text-danger">{Error}</label><br />
                         {/* User Type */}
                         <label>You are:</label>
                         <div className="btn-group user-type">

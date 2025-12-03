@@ -42,8 +42,7 @@ const UpdatePropertyPlot = () => {
     const [ConstructionStatus, setConstructionStatus] = useState("")
     const [possession_by, setPossession] = useState("")
     const [ownership, setOwnership] = useState("");
-
-    const openside = ["1 ", "2", "3", "3+"]
+    const [errors, setErrors] = useState({});
 
     const Ownership = ["Freehold", "Leasehold", "Co-operative society", "Power of Attorney"]
     const steps = [
@@ -131,10 +130,27 @@ const UpdatePropertyPlot = () => {
 
         getData();
     }, [id, property_type]);
+    const validateForm = () => {
+        const newErrors = {};
+        if (!area || area <= 0)
+            newErrors.area = "Please enter a valid built up area";
+        if (!price || price <= 0)
+            newErrors.price = "Please enter property price";
 
+        if (!Floors) newErrors.Floors = "Please select Floors";
+
+        if (!cityName) newErrors.cityName = "Please enter city";
+        if (!locality) newErrors.locality = "Please enter locality";
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
     // update api call 
     const handleUpdatePost = async () => {
-
+        if (!validateForm()) {
+            return;  // ❌ Form invalid → Stop
+        }
         if (property_type === "residential") {
 
             const payload = {
@@ -299,7 +315,7 @@ const UpdatePropertyPlot = () => {
                                         </div>
                                     </div>
 
-
+                                    {errors.area && <p className="text-danger">{errors.area}</p>}
                                     <h4 className="mt-3">Floors Allowed For Construction</h4>
                                     <div className="col-md-6">
 
@@ -310,18 +326,16 @@ const UpdatePropertyPlot = () => {
                                             onChange={(e) => setFloors(e.target.value)}
                                         />
                                     </div>
-
-                                    <h4 className="mt-3">Plot No.</h4>
+                                    {errors.Floors && <p className="text-danger">{errors.Floors}</p>}
+                                    <h4 className="mt-3">Plot No. (Optional)</h4>
                                     <div className="btn-group sub-options">
-                                        {openside.map((option) => (
-                                            <button
-                                                key={option}
-                                                className={`${plotno === option ? "active" : ""}`}
-                                                onClick={() => setPlotno(option)}
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
+                                        <input
+                                            type="text"
+                                            placeholder="Plot No."
+                                            value={plotno}
+                                            onChange={(e) => setPlotno(e.target.value)}
+                                        />
+
                                     </div>
 
 
@@ -331,6 +345,7 @@ const UpdatePropertyPlot = () => {
                                         <button className={ConstructionStatus === "NO" ? "active" : ""} onClick={() => setConstructionStatus("NO")}> NO </button>
 
                                     </div>
+
                                     <h4 className="mt-3">Ownership</h4>
                                     <div className="btn-group sub-options">
 
@@ -363,7 +378,8 @@ const UpdatePropertyPlot = () => {
 
                                         </div>
                                     </div>
-                                    <h4 className="mt-3">Possession By</h4>
+                                    {errors.price && <p className="text-danger">{errors.price}</p>}
+                                    <h4 className="mt-3">Possession By  (Optional)</h4>
 
                                     <div className="input-wrapper col-md-6">
                                         <select
@@ -394,6 +410,7 @@ const UpdatePropertyPlot = () => {
                                         placeholder="Enter City Name"
                                         onChange={(e) => setCityName(e.target.value)}
                                     />
+                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
                                     <label>Locality </label>
 
                                     <input
@@ -403,13 +420,7 @@ const UpdatePropertyPlot = () => {
                                         onChange={(e) => setLocality(e.target.value)}
                                     />
 
-                                    {/* <label>Sub Locality (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={subLocality}
-                                        placeholder="Enter Sub Locality "
-                                        onChange={(e) => setSubLocality(e.target.value)}
-                                    /> */}
+                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
                                     <label>Apartment/Society (Optional)</label>
                                     <input
                                         type="text"

@@ -91,10 +91,7 @@ const CommercialProperty = () => {
             newErrors.possessionstatus = "Please select Possession  status";
         }
 
-        // office Space Status
-        if (!officespace) {
-            newErrors.officespace = "Please select office Space ";
-        }
+
         // Pantry
         if (!pantry) {
             newErrors.pantry = "Please select Pantry ";
@@ -125,17 +122,9 @@ const CommercialProperty = () => {
         if (!floor) {
             newErrors.floor = "Enter Floor Number ";
         }
-        //  Tower Status
-        if (!tower) {
-            newErrors.tower = "Please Enter Tower ";
-        }
-        //  balconies Status
+     
         if (!balconies_com) {
             newErrors.balconies_com = "Please Select Balconies ";
-        }
-        //  Facing Status
-        if (!facing) {
-            newErrors.facing = "Please Select Facing ";
         }
 
         // City
@@ -208,7 +197,7 @@ const CommercialProperty = () => {
         setFloor(Profile.floor || "")
         setLift(Profile.lift || "")
         setFacing(Profile.facing || "")
-        setTower(Profile.tower | "")
+        setTower(Profile.tower || "")
         setPower(Profile.power || "")
         setArea(Profile.area || "");
         setAreaUnit(Profile.AreaUnit || "sq.ft.");
@@ -221,7 +210,7 @@ const CommercialProperty = () => {
         setApartment(Profile.apartment || "");
 
     }, []);
-
+    // console.log(tower)
     // get api Property Type:
     return (
         <div className="main-layout">
@@ -404,7 +393,7 @@ const CommercialProperty = () => {
                                             {errors.furnishing}
                                         </p>
                                     )}
-                                    <h4 className="mt-3">Office Space Type</h4>
+                                    <h4 className="mt-3">Office Space Type  (Optional)</h4>
                                     <div className="btn-group sub-options">
 
                                         {OfficeSpace.map((option) => (
@@ -417,11 +406,7 @@ const CommercialProperty = () => {
                                             </button>
                                         ))}
                                     </div>
-                                    {errors.officespace && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
-                                            {errors.officespace}
-                                        </p>
-                                    )}
+
 
                                     <h4>Pantry</h4>
                                     <div className="btn-group sub-options">
@@ -551,7 +536,7 @@ const CommercialProperty = () => {
                                             {errors.floor}
                                         </p>
                                     )}
-                                    <h4 className="mt-3">Tower/Block</h4>
+                                    <h4 className="mt-3">Tower/Block  (Optional)</h4>
                                     <input
                                         type="text"
                                         value={tower}
@@ -559,12 +544,12 @@ const CommercialProperty = () => {
                                         onChange={(e) => setTower(e.target.value)}
                                     />
 
-                                    {errors.tower && (
+                                    {/* {errors.tower && (
                                         <p style={{ color: "red", marginTop: "4px" }}>
                                             {errors.tower}
                                         </p>
-                                    )}
-                                    <h4 className="mt-3"> Facing</h4>
+                                    )} */}
+                                    <h4 className="mt-3"> Facing  (Optional)</h4>
 
                                     <select
                                         value={facing}
@@ -576,11 +561,7 @@ const CommercialProperty = () => {
                                         }
 
                                     </select>
-                                    {errors.facing && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
-                                            {errors.facing}
-                                        </p>
-                                    )}
+
                                     <h4 className="mt-3">City</h4>
 
                                     <input
