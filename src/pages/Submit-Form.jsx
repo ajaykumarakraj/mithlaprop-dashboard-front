@@ -363,9 +363,9 @@ const SubmitForm = () => {
                                 </div>
                             )}
 
-                            <button className="upload-btn" disabled={!previews.length}>
+                            {/* <button className="upload-btn" disabled={!previews.length}>
                                 Upload Images
-                            </button>
+                            </button> */}
                         </div>
 
 

@@ -418,32 +418,37 @@ const Residentialproperty = () => {
                                         ))}
                                     </div>
                                     {errors.furnishing && <p className="text-danger">{errors.furnishing}</p>}
-                                    <label>City</label>
-                                    <input
-                                        type="text"
-                                        value={cityName}
-                                        placeholder="Enter City Name"
-                                        onChange={(e) => setCityName(e.target.value)}
-                                    />
+                                    <h4 className="mt-3">City</h4>
+                                    <div className="">
+                                        <input
+                                            type="text"
+                                            value={cityName}
+                                            placeholder="Enter City Name"
+                                            onChange={(e) => setCityName(e.target.value)}
+                                        />
+                                    </div>
                                     {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
-                                    <label>Locality </label>
-
-                                    <input
-                                        type="text"
-                                        value={locality}
-                                        placeholder="Enter locality"
-                                        onChange={(e) => setLocality(e.target.value)}
-                                    />
+                                    <h4 className="">Locality </h4>
+                                    <div className="">
+                                        <input
+                                            type="text"
+                                            value={locality}
+                                            placeholder="Enter locality"
+                                            onChange={(e) => setLocality(e.target.value)}
+                                        />
+                                    </div>
                                     {errors.locality && <p className="text-danger">{errors.locality}</p>}
 
-                                    <label>Apartment/Society (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={apartment}
-                                        placeholder="Enter Apartment/Society "
-                                        onChange={(e) => setApartment(e.target.value)}
-                                    />
+                                    <h4 className="">Apartment/Society (Optional)</h4>
+                                    <div className="">
+                                        <input
+                                            type="text"
+                                            value={apartment}
+                                            placeholder="Enter Apartment/Society "
+                                            onChange={(e) => setApartment(e.target.value)}
+                                        />
 
+                                    </div>
 
                                 </div>
                             </div>

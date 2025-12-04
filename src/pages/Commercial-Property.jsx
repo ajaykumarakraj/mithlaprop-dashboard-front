@@ -122,7 +122,7 @@ const CommercialProperty = () => {
         if (!floor) {
             newErrors.floor = "Enter Floor Number ";
         }
-     
+
         if (!balconies_com) {
             newErrors.balconies_com = "Please Select Balconies ";
         }
@@ -288,7 +288,7 @@ const CommercialProperty = () => {
                                         </div>
                                     </div>
                                     {errors.area && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.area}
                                         </p>
                                     )}
@@ -312,7 +312,7 @@ const CommercialProperty = () => {
                                         </div>
                                     </div>
                                     {errors.price && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.price}
                                         </p>
                                     )}
@@ -327,7 +327,7 @@ const CommercialProperty = () => {
                                         }
                                     </div>
                                     {errors.possessionstatus && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.possessionstatus}
                                         </p>
                                     )}
@@ -389,7 +389,7 @@ const CommercialProperty = () => {
                                         ))}
                                     </div>
                                     {errors.furnishing && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.furnishing}
                                         </p>
                                     )}
@@ -423,7 +423,7 @@ const CommercialProperty = () => {
                                         }
                                     </div>
                                     {errors.pantry && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.pantry}
                                         </p>
                                     )}
@@ -437,7 +437,7 @@ const CommercialProperty = () => {
                                         </button>
                                     </div>
                                     {errors.washroom && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.washroom}
                                         </p>
                                     )}
@@ -456,7 +456,7 @@ const CommercialProperty = () => {
                                     </div>
 
                                     {errors.coveredparking && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.coveredparking}
                                         </p>
                                     )}
@@ -474,7 +474,7 @@ const CommercialProperty = () => {
                                         ))}
                                     </div>
                                     {errors.openparking && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.openparking}
                                         </p>
                                     )}
@@ -492,7 +492,7 @@ const CommercialProperty = () => {
                                         ))}
                                     </div>
                                     {errors.balconies_com && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.balconies_com}
                                         </p>
                                     )}
@@ -506,7 +506,7 @@ const CommercialProperty = () => {
                                         </button>
                                     </div>
                                     {errors.power && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.power}
                                         </p>
                                     )}
@@ -520,29 +520,32 @@ const CommercialProperty = () => {
                                         </button>
                                     </div>
                                     {errors.lift && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.lift}
                                         </p>
                                     )}
                                     <h4>Floor Number</h4>
-                                    <input
+                                    <div className=""> <input
                                         type="text"
                                         value={floor}
                                         placeholder="Enter Floor Number"
                                         onChange={(e) => setFloor(e.target.value)}
-                                    />
+                                    /></div>
+
                                     {errors.floor && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.floor}
                                         </p>
                                     )}
                                     <h4 className="mt-3">Tower/Block  (Optional)</h4>
-                                    <input
-                                        type="text"
-                                        value={tower}
-                                        placeholder="Enter Tower/Block"
-                                        onChange={(e) => setTower(e.target.value)}
-                                    />
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={tower}
+                                            placeholder="Enter Tower/Block"
+                                            onChange={(e) => setTower(e.target.value)}
+                                        />
+                                    </div>
 
                                     {/* {errors.tower && (
                                         <p style={{ color: "red", marginTop: "4px" }}>
@@ -551,50 +554,58 @@ const CommercialProperty = () => {
                                     )} */}
                                     <h4 className="mt-3"> Facing  (Optional)</h4>
 
-                                    <select
-                                        value={facing}
-                                        onChange={(e) => setFacing(e.target.value)}>
-                                        {
-                                            Facing.map((value, k) => (
-                                                <option key={k} value={value}>{value}</option>
-                                            ))
-                                        }
+                                    <div>
+                                        <select
+                                            value={facing}
+                                            onChange={(e) => setFacing(e.target.value)}>
+                                            {
+                                                Facing.map((value, k) => (
+                                                    <option key={k} value={value}>{value}</option>
+                                                ))
+                                            }
 
-                                    </select>
+                                        </select>
+                                    </div>
 
                                     <h4 className="mt-3">City</h4>
 
-                                    <input
-                                        type="text"
-                                        value={cityName}
-                                        placeholder="Enter City Name"
-                                        onChange={(e) => setCityName(e.target.value)}
-                                    />
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={cityName}
+                                            placeholder="Enter City Name"
+                                            onChange={(e) => setCityName(e.target.value)}
+                                        />
+                                    </div>
                                     {errors.cityName && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.cityName}
                                         </p>
                                     )}
-                                    <label>Locality </label>
+                                    <h4 className="mt-3">Locality </h4>
+                                    <div>
 
-                                    <input
-                                        type="text"
-                                        value={locality}
-                                        placeholder="Enter locality"
-                                        onChange={(e) => setLocality(e.target.value)}
-                                    />
+                                        <input
+                                            type="text"
+                                            value={locality}
+                                            placeholder="Enter locality"
+                                            onChange={(e) => setLocality(e.target.value)}
+                                        />
+                                    </div>
                                     {errors.locality && (
-                                        <p style={{ color: "red", marginTop: "4px" }}>
+                                        <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>
                                             {errors.locality}
                                         </p>
                                     )}
-                                    <label>Apartment/Society (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={apartment}
-                                        placeholder="Enter Apartment/Society "
-                                        onChange={(e) => setApartment(e.target.value)}
-                                    />
+                                    <h4 className="mt-3">Apartment/Society (Optional)</h4>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={apartment}
+                                            placeholder="Enter Apartment/Society "
+                                            onChange={(e) => setApartment(e.target.value)}
+                                        />
+                                    </div>
 
 
                                 </div>

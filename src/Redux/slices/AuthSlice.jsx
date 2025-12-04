@@ -93,9 +93,9 @@ const AuthSlice = createSlice({
         state.redirect = true;
         state.otpSent = false;
 
-        if (action.payload?.token) {
-          localStorage.setItem("token", action.payload.token);
-        }
+        // if (action.payload?.token) {
+        //   localStorage.setItem("token", action.payload.token);
+        // }
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;

@@ -140,7 +140,8 @@ const PostProperty = () => {
             alert("Please select property type");
         }
     };
-    // localStorage.removeItem("user")
+    localStorage.removeItem("token");
+    // localStorage.removeItem("basicDetails")
     // console.log(subType)
     return (
         <div className="main-layout">
@@ -224,6 +225,7 @@ const PostProperty = () => {
                         <div className="btn-group property-type">
                             {
                                 propertylist.filter((status) => status.status == "1").map((v, k) => (
+
                                     <button
                                         key={k}
                                         className={v.type_name === propertyTypeurl ? "active" : ""}
@@ -231,9 +233,11 @@ const PostProperty = () => {
                                     >
                                         {v.type_name}
                                     </button>
+
                                 ))}
+
                         </div>
-                        <label className="text-danger">{Proeertyerror}</label><br />
+                        <label className="text-danger">{Proeertyerror}</label>
                         {/* Subtype */}
                         {Array.isArray(getSubTypeOptions) && getSubTypeOptions.length > 0 && (
                             <>

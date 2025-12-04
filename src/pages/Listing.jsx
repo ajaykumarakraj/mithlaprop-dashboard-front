@@ -81,7 +81,7 @@ const Listing = () => {
                                         />
                                         <div>
                                             <h5 className="card-title fw-bold text-transform">{listing.bhk_type}, {listing.property_type}</h5>
-                                            <p className="text-muted mb-1 text-transform">{listing.agent_city}, {listing.locality}</p>
+                                            <p className="text-muted mb-1 text-transform">{listing.property_city}, {listing.locality}</p>
                                             <p className="text-primary fw-bold">₹ {listing.price}</p>
                                         </div>
 

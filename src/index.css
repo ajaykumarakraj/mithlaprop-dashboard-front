@@ -215,10 +215,11 @@ select {
     margin-bottom: 5px;
     transition: all 0.3s ease;
 }
+
 .circle-icon-edit {
     width: 36px;
     height: 36px;
-   
+
     border-radius: 50%;
     color: #ccc;
     display: flex;
@@ -401,6 +402,7 @@ select {
 .btn-group,
 .btn-group-vertical {
     display: flex !important;
+    margin: 10px 0 10px !important;
 }
 
 .h4,
@@ -763,6 +765,15 @@ select {
 
 .listing img {
     height: 100px;
+}
+
+.btn-group button {
+    text-transform: capitalize;
+}
+
+input,
+select {
+    padding: 5px !important;
 }
 
 /* Mobile Menu */

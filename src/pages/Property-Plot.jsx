@@ -202,7 +202,7 @@ const PropertyPlot = () => {
                                         </div>
                                     </div>
 
-                                    {errors.area && <p className="text-danger">{errors.area}</p>}
+                                    {errors.area && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.area}</p>}
 
 
                                     <h4 className="mt-3">Floors Allowed For Construction</h4>
@@ -215,7 +215,7 @@ const PropertyPlot = () => {
                                             onChange={(e) => setFloors(e.target.value)}
                                         />
                                     </div>
-                                    {errors.Floors && <p className="text-danger">{errors.Floors}</p>}
+                                    {errors.Floors && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.Floors}</p>}
                                     <h4 className="mt-3">Plot No.  (Optional)</h4>
                                     <div className="col-md-6">
                                         <input
@@ -234,7 +234,7 @@ const PropertyPlot = () => {
                                         <button className={ConstructionStatus === "NO" ? "active" : ""} onClick={() => setConstructionStatus("NO")}> NO </button>
 
                                     </div>
-                                    {errors.ConstructionStatus && <p className="text-danger">{errors.ConstructionStatus}</p>}
+                                    {errors.ConstructionStatus && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.ConstructionStatus}</p>}
                                     <h4 className="mt-3">Ownership</h4>
                                     <div className="btn-group sub-options">
 
@@ -248,7 +248,7 @@ const PropertyPlot = () => {
                                             </button>
                                         ))}
                                     </div>
-                                    {errors.ownership && <p className="text-danger">{errors.ownership}</p>}
+                                    {errors.ownership && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.ownership}</p>}
                                     <h4 className="mt-3">Add Price Details</h4>
                                     <div className="col-md-6">
 
@@ -269,7 +269,7 @@ const PropertyPlot = () => {
 
                                         </div>
                                     </div>
-                                    {errors.price && <p className="text-danger">{errors.price}</p>}
+                                    {errors.price && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.price}</p>}
                                     <h4 className="mt-3">Possession By  (Optional)</h4>
 
                                     <div className="input-wrapper col-md-6">
@@ -288,37 +288,37 @@ const PropertyPlot = () => {
                                             <option value="By 2031">By 2031</option>
                                         </select>
                                     </div>
+                                    <h4 className="mt-3">City</h4>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={cityName}
+                                            placeholder="Enter City Name"
+                                            onChange={(e) => setCityName(e.target.value)}
+                                        />
+                                    </div>
+                                    {errors.cityName && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.cityName}</p>}
+                                    <h4 className="">Locality </h4>
 
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={locality}
+                                            placeholder="Enter locality"
+                                            onChange={(e) => setLocality(e.target.value)}
+                                        />
 
-
-
-
-
-                                    <label>City</label>
-                                    <input
-                                        type="text"
-                                        value={cityName}
-                                        placeholder="Enter City Name"
-                                        onChange={(e) => setCityName(e.target.value)}
-                                    />
-                                    {errors.cityName && <p className="text-danger">{errors.cityName}</p>}
-                                    <label>Locality </label>
-
-                                    <input
-                                        type="text"
-                                        value={locality}
-                                        placeholder="Enter locality"
-                                        onChange={(e) => setLocality(e.target.value)}
-                                    />
-
-                                    {errors.locality && <p className="text-danger">{errors.locality}</p>}
-                                    <label>Apartment/Society (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={apartment}
-                                        placeholder="Enter Apartment/Society "
-                                        onChange={(e) => setApartment(e.target.value)}
-                                    />
+                                    </div>
+                                    {errors.locality && <p style={{ color: "red", marginTop: "4px", fontSize: "12px" }}>{errors.locality}</p>}
+                                    <h4 className="">Apartment/Society (Optional)</h4>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={apartment}
+                                            placeholder="Enter Apartment/Society "
+                                            onChange={(e) => setApartment(e.target.value)}
+                                        />
+                                    </div>
 
 
                                 </div>

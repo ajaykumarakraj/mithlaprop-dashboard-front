@@ -33,14 +33,23 @@ const Navbar = () => {
                     <li className="nav-item">
                         <Link to="/listings" className="nav-link">Listings</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="#" className="nav-link">Packages</Link>
-                    </li>
+
                     <li className="nav-item">
                         <Link to="/postproperty" className="nav-link">Post Property</Link>
                     </li>
                     <li className="nav-item">
                         <Link to="/profile" className="nav-link">Profile</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link
+                            to="/sign-in"
+                            className="nav-link"
+                            onClick={() => {
+                                localStorage.removeItem("user");
+                            }}
+                        >
+                            Log Out
+                        </Link>
                     </li>
                 </ul>
 

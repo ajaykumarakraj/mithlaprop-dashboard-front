@@ -1,15 +1,14 @@
 // src/component/ProtectedRoute.jsx
-import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
-    const token = localStorage.getItem("token"); // or use context/auth hook
+const ProtectedRoute = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    if (!token) {
+    if (!user?.token) {
         return <Navigate to="/sign-in" replace />;
     }
 
-    return children;
+    return <Outlet />; // allow nested routes
 };
 
 export default ProtectedRoute;
